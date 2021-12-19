@@ -1,0 +1,185 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on Hugo Hermit</title>
+		<link>https://hasasak.github.io/posts/</link>
+		<description>Recent content in Posts on Hugo Hermit</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>en-us</language>
+		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+		<lastBuildDate>Sun, 12 Dec 2021 00:00:00 +0000</lastBuildDate>
+		<atom:link href="https://hasasak.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>西瓜书学习记录</title>
+			<link>https://hasasak.github.io/posts/creating-a-new-theme/</link>
+			<pubDate>Sun, 12 Dec 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://hasasak.github.io/posts/creating-a-new-theme/</guid>
+			<description>决策树 决策树是监督的。学习内容是结点划分属性顺序+选择（决策树构建）。
+信息增益 信息增益是决策树的属性选择的依据。
+信息熵是香农提出的信息的混乱程度。
+信息增益表示为划分前后信息熵的差值。
+在CART决策树中使用基尼值作为信息纯度。
+信息增益率 在西瓜数据集中，模拟ID3算法时忽略了数据的编号。若不忽略编号的话以编号作为划分属性是可以得到最大的信息增益的。一层就可以将数据集全部划分。
+但很明显，编号作为数据的属性无疑是一种特性。这种划分方法也一定会导致过拟合，模型的泛化能力会变得很差。
+因此引入信息增益利率进行分支惩罚。信息增益率引入属性A的固有值这一特性作为信息增益的分母。
+观察这个固有值的表示方法。可以发现这个固有值也是一种信息熵。他表示的不是划分出结点这个动作本身所带来的信息。而是属性A本身携带的信息。
+可以这样理解。以编号这一特性做出的分类决策会带来很大的信息增益。但是编号这个属性本身的固有值很大，本身就应该带来很大的信息增益。这个增益不是靠划分样本得到的。固有值低的属性就像是一张百分制的试卷，固有值低的可以比成五分制的试卷。忽略固有值只看增益是没有办法看出这个属性的好坏的。因此信息增益除以属性固有值，看作一种标准化，可以更好的表示划分数据集效果好坏。
+在CART决策树中使用基尼值作为信息纯度。但是基尼值的作用仅仅是信息纯度的另一种表示方法而已。
+剪枝 引入信息增益率这种可以有效减少将像编号这种具备多个值的属性划分数据的概率。但是数据在多次划分后仍然会产生很多的叶子节点。
+叶子节点过多，说明模型学的过多。也就是所谓的过拟合，学到了不该学到的特性。
+这时我们对数据集进行剪枝处理。
+预剪枝与后剪枝 预剪枝是在决策树决定分支属性A之前，先测验以属性A划分数据时模型的泛化能力。这需要用到验证集。
+关于验证集。吴恩达介绍说即便是很多论文中，由于疏忽也会将验证集与测试集混淆。
+验证集与测试集是必须要分开的。这点很容易理解，验证集其实是在训练模型时使用的一种手段。因此要与测试模型的测试集分开。否组无法体现出模型的泛化能力。
+因而预剪枝就是使用验证集在训练模型时就提前预测出泛化能力好坏，以此为标准改变这个结点的属性值或者改变网络形状等操作。这是训练的一种手段。
+测试集是在模型训练完成后，对模型进行泛化能力的测试。就像不能提前告诉学生考题一样。不能将验证集作为测试集。
+而后剪枝是在决策树生成后，删除某些属性后，通过验证集查看是否带来了泛化能力的提高。
+个人感觉预剪枝在构造树之前就选好了使用的属性，后剪枝在树构造后进行剪枝，是会改变树的形状的，也许操作会复杂一些。
+但是预剪枝也许会剪掉一些不该剪的分支。通过书上的对比图可以看出，后剪枝保留的分支是比较多的，因此也许预剪枝面临着欠拟合的风险。
+连续属性值 在构造决策树时还可能会用到连续的属性值A。对连续值的处理就是将其离散化为离散属性。很容易理解只需要将他们聚类，就可以变为离散值。
+我们用A的一个离散值T。大于T小于T的自然被分为两类。连续值也就变成了离散值。离散值T如何选取呢?
+二分法 将A递增或递减可以排序。Ai与Ai+1之间的任何一个值都可以将他们分开。T就可在任意两个A出现的属性值之间选择。两者的中值点比较好计算，这种方法也就被称作二分法。
+选择标准自然是选择点所带来的信息增益。
+缺失值处理 在构建决策树时面临的另一个问题时缺失值，几乎所有的机器学习都需要解决这个问题。放弃不完整的样本是对信息的一种浪费。
+为了使用这些带有缺失值的样本，需要解决两个问题：如何选择属性值A。样本在属性值A上缺失的话如何划分该样本。
+在选择划分的属性时，同样是通过衡量计算出的信息增益的大小来选择属性的，但是在计算信息增益时，只有在属性值A上没有缺失的样本才能用来判断属性A的优劣。
+因此用到计算信息增益的样本并不是全集，而是无缺失值的子集。因为只有当样本无缺失时才有信息，当样本有缺失时信息熵就为零，所以这个结果乘无缺失样本的比例。
+但是当样本在属性值A上的值缺失时，仅仅这样做无法将样本正确分类。这里还提供了一种概率的思路。
+首先赋予样本一个权值。若这个样本在这个属性A上没有缺失，那么它就被正确分类。反之，无法正确分类就将这个权值按照已知的比例划分成V份，这个V就是离散属性A所具有的V个值。
+然后将这V份分别分类到V个子结点。表现在权重上就是这个样本的权重会按照比例划分成V个子样本的权重。这V个子样本分别具备各自在属性A上的取值AV。
+多变量决策树 为了提高模型的泛化性能。很容易单变量的决策树出现在坐标空间中是以多条平行于坐标轴的线组成的。这样的模型拟合的也许不是很好，泛化性也很差。所以我们使用多变量决策让决策树可以使用斜线来划分数据集。让决策树可以更好的拟合目标函数。
+poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False) train_new_features=poly.fit_transform(X_train[[&amp;#39;breathes&amp;#39;,&amp;#39;tail&amp;#39;]]) test_new_features=poly.transform(X_test[[&amp;#39;breathes&amp;#39;,&amp;#39;tail&amp;#39;]]) X_new_train = np.concatenate((X_train, train_new_features), axis=1) X_new_test = np.concatenate((X_test, test_new_features), axis=1) 聚类 K均值 多次迭代更新均值向量，迭代过程如下：
+计算各样本与均值向量的距离，将距离最近的划入对应的分类簇中。
+对每个分类簇计算均值向量替代。
+初始化质心时可以随机选取一个样本作为均值向量u1。
+从其余各样本中选择一个作为U2。选择样本时，距离已选质心的距离和越大的被选中几率越高。依次选出K个初始质心。
+K值的确定会影响到聚类的结果。使用手肘法合理选择K值。
+计算样本与与质心距离时，可以预先储存出各个样本之间的聚集矩阵。利用三角形原理快速比较距离。
+数据归一化，消除量纲影响。\</description>
+			<content type="html"><![CDATA[<h1 id="决策树">决策树</h1>
+<p>决策树是监督的。学习内容是结点划分属性顺序+选择（决策树构建）。</p>
+<h2 id="信息增益">信息增益</h2>
+<p>信息增益是决策树的属性选择的依据。</p>
+<p>信息熵是香农提出的信息的混乱程度。</p>
+<p>信息增益表示为划分前后信息熵的差值。</p>
+<p>在CART决策树中使用基尼值作为信息纯度。</p>
+<h2 id="信息增益率">信息增益率</h2>
+<p>在西瓜数据集中，模拟ID3算法时忽略了数据的编号。若不忽略编号的话以编号作为划分属性是可以得到最大的信息增益的。一层就可以将数据集全部划分。</p>
+<p>但很明显，编号作为数据的属性无疑是一种特性。这种划分方法也一定会导致过拟合，模型的泛化能力会变得很差。</p>
+<p>因此引入信息增益利率进行分支惩罚。信息增益率引入属性A的固有值这一特性作为信息增益的分母。</p>
+<p>观察这个固有值的表示方法。可以发现这个固有值也是一种信息熵。他表示的不是划分出结点这个动作本身所带来的信息。而是属性A本身携带的信息。</p>
+<p>可以这样理解。以编号这一特性做出的分类决策会带来很大的信息增益。但是编号这个属性本身的固有值很大，本身就应该带来很大的信息增益。这个增益不是靠划分样本得到的。固有值低的属性就像是一张百分制的试卷，固有值低的可以比成五分制的试卷。忽略固有值只看增益是没有办法看出这个属性的好坏的。因此信息增益除以属性固有值，看作一种标准化，可以更好的表示划分数据集效果好坏。</p>
+<p>在CART决策树中使用基尼值作为信息纯度。但是基尼值的作用仅仅是信息纯度的另一种表示方法而已。</p>
+<h2 id="剪枝">剪枝</h2>
+<p>引入信息增益率这种可以有效减少将像编号这种具备多个值的属性划分数据的概率。但是数据在多次划分后仍然会产生很多的叶子节点。</p>
+<p>叶子节点过多，说明模型学的过多。也就是所谓的过拟合，学到了不该学到的特性。</p>
+<p>这时我们对数据集进行剪枝处理。</p>
+<h3 id="预剪枝与后剪枝">预剪枝与后剪枝</h3>
+<p>预剪枝是在决策树决定分支属性A之前，先测验以属性A划分数据时模型的泛化能力。这需要用到验证集。</p>
+<p>关于验证集。吴恩达介绍说即便是很多论文中，由于疏忽也会将验证集与测试集混淆。</p>
+<p>验证集与测试集是必须要分开的。这点很容易理解，验证集其实是在训练模型时使用的一种手段。因此要与测试模型的测试集分开。否组无法体现出模型的泛化能力。</p>
+<p>因而预剪枝就是使用验证集在训练模型时就提前预测出泛化能力好坏，以此为标准改变这个结点的属性值或者改变网络形状等操作。这是训练的一种手段。</p>
+<p>测试集是在模型训练完成后，对模型进行泛化能力的测试。就像不能提前告诉学生考题一样。不能将验证集作为测试集。</p>
+<p>而后剪枝是在决策树生成后，删除某些属性后，通过验证集查看是否带来了泛化能力的提高。</p>
+<p>个人感觉预剪枝在构造树之前就选好了使用的属性，后剪枝在树构造后进行剪枝，是会改变树的形状的，也许操作会复杂一些。</p>
+<p>但是预剪枝也许会剪掉一些不该剪的分支。通过书上的对比图可以看出，后剪枝保留的分支是比较多的，因此也许预剪枝面临着欠拟合的风险。</p>
+<h2 id="连续属性值">连续属性值</h2>
+<p>在构造决策树时还可能会用到连续的属性值A。对连续值的处理就是将其离散化为离散属性。很容易理解只需要将他们聚类，就可以变为离散值。</p>
+<p>我们用A的一个离散值T。大于T小于T的自然被分为两类。连续值也就变成了离散值。离散值T如何选取呢?</p>
+<h3 id="二分法">二分法</h3>
+<p>将A递增或递减可以排序。Ai与Ai+1之间的任何一个值都可以将他们分开。T就可在任意两个A出现的属性值之间选择。两者的中值点比较好计算，这种方法也就被称作二分法。</p>
+<p>选择标准自然是选择点所带来的信息增益。</p>
+<h2 id="缺失值处理">缺失值处理</h2>
+<p>在构建决策树时面临的另一个问题时缺失值，几乎所有的机器学习都需要解决这个问题。放弃不完整的样本是对信息的一种浪费。</p>
+<p>为了使用这些带有缺失值的样本，需要解决两个问题：如何选择属性值A。样本在属性值A上缺失的话如何划分该样本。</p>
+<p>在选择划分的属性时，同样是通过衡量计算出的信息增益的大小来选择属性的，但是在计算信息增益时，只有在属性值A上没有缺失的样本才能用来判断属性A的优劣。</p>
+<p>因此用到计算信息增益的样本并不是全集，而是无缺失值的子集。因为只有当样本无缺失时才有信息，当样本有缺失时信息熵就为零，所以这个结果乘无缺失样本的比例。</p>
+<p>但是当样本在属性值A上的值缺失时，仅仅这样做无法将样本正确分类。这里还提供了一种概率的思路。</p>
+<p>首先赋予样本一个权值。若这个样本在这个属性A上没有缺失，那么它就被正确分类。反之，无法正确分类就将这个权值按照已知的比例划分成V份，这个V就是离散属性A所具有的V个值。</p>
+<p>然后将这V份分别分类到V个子结点。表现在权重上就是这个样本的权重会按照比例划分成V个子样本的权重。这V个子样本分别具备各自在属性A上的取值AV。</p>
+<p><img src="C:%5CUsers%5C10549%5CDesktop%5CP.png" alt=""></p>
+<p><img src="C:%5CUsers%5C10549%5CDesktop%5Cwx.png" alt="wx"></p>
+<h2 id="多变量决策树">多变量决策树</h2>
+<p>为了提高模型的泛化性能。很容易单变量的决策树出现在坐标空间中是以多条平行于坐标轴的线组成的。这样的模型拟合的也许不是很好，泛化性也很差。所以我们使用多变量决策让决策树可以使用斜线来划分数据集。让决策树可以更好的拟合目标函数。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="n">poly</span> <span class="o">=</span> <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">interaction_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">train_new_features</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">[[</span><span class="s1">&#39;breathes&#39;</span><span class="p">,</span><span class="s1">&#39;tail&#39;</span><span class="p">]])</span>
+<span class="n">test_new_features</span><span class="o">=</span><span class="n">poly</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">[[</span><span class="s1">&#39;breathes&#39;</span><span class="p">,</span><span class="s1">&#39;tail&#39;</span><span class="p">]])</span>
+<span class="n">X_new_train</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">X_train</span><span class="p">,</span> <span class="n">train_new_features</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">X_new_test</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">X_test</span><span class="p">,</span> <span class="n">test_new_features</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div><h1 id="聚类">聚类</h1>
+<h2 id="k均值">K均值</h2>
+<p>多次迭代更新均值向量，迭代过程如下：</p>
+<p>计算各样本与均值向量的距离，将距离最近的划入对应的分类簇中。</p>
+<p>对每个分类簇计算均值向量替代。</p>
+<p>初始化质心时可以随机选取一个样本作为均值向量u1。</p>
+<p>从其余各样本中选择一个作为U2。选择样本时，距离已选质心的距离和越大的被选中几率越高。依次选出K个初始质心。</p>
+<p>K值的确定会影响到聚类的结果。使用手肘法合理选择K值。</p>
+<p>计算样本与与质心距离时，可以预先储存出各个样本之间的聚集矩阵。利用三角形原理快速比较距离。</p>
+<p>数据归一化，消除量纲影响。\</p>
+<h3 id="异常值处理">异常值处理</h3>
+<p>对于数据中的异常值通常使用箱线图来直观显示数据分布，箱线图一般由五个统计值构成：最大值、上四分位、中位数、下四分位、最小值，一般来说观测到的数据大于最大值或者小于最小值则判断为异常值。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Python" data-lang="Python"><span class="c1"># 箱线图查看异常值分布</span>
+<span class="k">def</span> <span class="nf">boxplot</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">)):</span>
+    <span class="n">features</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">select_dtypes</span><span class="p">(</span><span class="n">exclude</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;object&#39;</span><span class="p">,</span><span class="s1">&#39;bool&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">features</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    
+<span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div><h3 id="特征归一化">特征归一化</h3>
+<p>为了消除数据特征之间的纲量影响，我们需要对特征进行归一化处理，使得不同特征之间具有可比性。例如，在分析人类身高体重对健康影响时，如果身高采用米(m)做单位，体重采用千克(kg)做单位时，身高取值范围一般在1.6 ~ 1.8m内，而体重则会在50~100kg范围内，对于那些对&quot;距离&quot;敏感的模型来说不同纲量的特征常常会引起模型产生较大的误差。因此需要对特征进行归一化处理，使得各指标之间处于同一数量级，以便保证模型的准确性。在实际应用中除了本案例中使用的K均值聚类外，还有逻辑蒂斯回归，支持向量机，线性回归，神经网络模型等也需要进行特征归一化处理。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="c1"># 特征归一化 </span>
+<span class="n">mm_scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">mm_scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">mm_scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span> 
+</code></pre></div><h2 id="学习向量量化">学习向量量化</h2>
+<p>学习向量量化与K均值不同，所要聚类的数据是带有标签的。但是这个标签是用来辅助聚类的。</p>
+<p>首先初始化原型向量。</p>
+<p>抽取一个样本，计算与所有原型向量的距离。找出距离最近的原型向量，当标签一致时更新原型向量像该样本靠近，标签不同时远离。</p>
+<h2 id="高斯混合聚类">高斯混合聚类</h2>
+<p>K均值聚类采用距离这个值来判断属于哪个类别，在数据成圆形的分布时可以得到较好的训练结果。但在数据成其他形状时聚类效果不理想。因此出现了高斯混合聚类。</p>
+<p>高斯分布就是正态分布。高斯混合聚类就是用K个高斯分布拟合数据，然后计算出样本的概率模型，刻画出样本的概率模型时通过后验分布分类出样本属于某个簇的概率，将样本放入概率最大的簇中。求解模型参数需要用到EM算法。</p>
+<h2 id="密度聚类">密度聚类</h2>
+<p>密度聚类考虑的是样本连接的紧密程度</p>
+<p>可以以距离E设置一个邻域。在一个样本邻域内的其他样本足够多，则称这个样本为核心对象。</p>
+<p>联系的紧密程度按下降排列依次为：密度直达，密度可达，密度相连。</p>
+<p>密度直达就是x2在x1邻域内，密度可达就是x2与x1邻域内的样本点密度直达。密度相连就是x1可通过多个密度直达的样本相互连接至x1。</p>
+<p>DBSCAN算法定义簇为最大密度相连样本集合。</p>
+<p>首先找到所有的核心样本，然后对每个核心样本将其密度可达的点加入对应的簇中。</p>
+<p>迭代计算与簇中所有样本密度可达的点，并将其加入簇中。直至所有的核心对象均被访问。</p>
+<p>密度聚类算法会放弃对那些没有对核心样本密度相连的样本点的分类。</p>
+<h2 id="层次聚类">层次聚类</h2>
+<p>层次聚类采用从底向上对聚类簇合并的方法聚类。</p>
+<p>首先初始化每一个样本点为一个簇，然后找出聚类最近的簇与其合并，放簇个数减少到预设的个数时停止。需要计算两个簇间的最大距离，最小距离，并由此计算出平均距离并合并。</p>
+<h1 id="贝叶斯分类器与em算法">贝叶斯分类器与EM算法</h1>
+<h2 id="贝叶斯决策论">贝叶斯决策论</h2>
+<p>贝叶斯决策论就是将期望损失降至最小。为最小化整体风险，就要在每个样本上都选出那个条件风险最小的类别标记。</p>
+<p>要想找出条件风险最小的类别标记，需要先找出概率模型，并结合误判损失计算出条件风险。</p>
+<p>但是要使用的后验分布在现实中难以获得，所以先要建立后验分布模型，估计出后验分布。</p>
+<p>常用方法有判别式模型和生成式模型。判别式模型时只观察该条件下的概率分布建立出的模型。生成式模型则是先建模联合概率分布并由此获得该后验概率。</p>
+<h2 id="em算法">EM算法</h2>
+<p>当条件概率只由参数zeta确定时可以用极大似然估计出参数zeta的值。</p>
+<p>但是现实中有些属性值的缺失的，由于有隐变量，所以无法直接求解出参数的值。所以采取EM算法。</p>
+<p>E步：固定参数，求得隐变量分布</p>
+<p>M步：固定隐变量，对参数求最大似然</p>
+<p>不断重复EM两步直至收敛，便可找到最优解。</p>
+<h1 id="降维与度量学习">降维与度量学习</h1>
+<h2 id="knn">KNN</h2>
+<p>KNN是一种懒惰学习，它并没有真正学到一些东西仅仅是将数据按照树的形式存储起来。但是在数据密度和K值合适时仍然能起到很好的分类效果。</p>
+<p>Kmeans是无监督的聚类方法，输入样本点，输出聚类质心。</p>
+<p>而KNN是监督的分类器，它将数据存储成树，存储的数据本身就作为分类标准。</p>
+<h2 id="低维嵌入">低维嵌入</h2>
+<p>之所以进行特征降维，是因为人观察到的数据往往都是高维数据，直接对这些数据拟合得到的也是一条高维曲线。此外，有KNN的例子，当数据密度足够大时，即使是懒惰学习也能够取得很好的学习成果。特征降维的另一个目的就是增大数据密度。</p>
+<h2 id="主成分分析pca">主成分分析PCA</h2>
+<p>最大化重构后的方差，这样做可以使样本点投影尽可能分开，也尽可能保留了最多的数据（重合点少）。常用于无监督学习。</p>
+<h2 id="线性判别分析lda">线性判别分析LDA</h2>
+<p>使数据尽可能分开，表示为最大化类内间隔的同时最小化类内方差。常用于监督学习。LDA由于本身使得样本更可分，LDA本身就可以用来当作分类器。</p>
+<h2 id="拉格朗日乘子法与kkt条件">拉格朗日乘子法与KKT条件</h2>
+<p>寻找多元函数在约束条件下求极值时用到拉格朗日乘子法与KKT条件。拉格朗日乘子法原理：画出等高线与约束条件曲线，在极值点处法向量是共线的。</p>
+<p>KKT条件是约束是不等式时构建拉格朗日乘子时的条件。</p>
+]]></content>
+		</item>
+		
+	</channel>
+</rss>

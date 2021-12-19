@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hugo Hermit</title>
+    <link>https://hasasak.github.io/</link>
+    <description>Recent content on Hugo Hermit</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
+    <lastBuildDate>Sun, 12 Dec 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://hasasak.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>西瓜书学习记录</title>
+      <link>https://hasasak.github.io/posts/creating-a-new-theme/</link>
+      <pubDate>Sun, 12 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://hasasak.github.io/posts/creating-a-new-theme/</guid>
+      <description>决策树 决策树是监督的。学习内容是结点划分属性顺序+选择（决策树构建）。
+信息增益 信息增益是决策树的属性选择的依据。
+信息熵是香农提出的信息的混乱程度。
+信息增益表示为划分前后信息熵的差值。
+在CART决策树中使用基尼值作为信息纯度。
+信息增益率 在西瓜数据集中，模拟ID3算法时忽略了数据的编号。若不忽略编号的话以编号作为划分属性是可以得到最大的信息增益的。一层就可以将数据集全部划分。
+但很明显，编号作为数据的属性无疑是一种特性。这种划分方法也一定会导致过拟合，模型的泛化能力会变得很差。
+因此引入信息增益利率进行分支惩罚。信息增益率引入属性A的固有值这一特性作为信息增益的分母。
+观察这个固有值的表示方法。可以发现这个固有值也是一种信息熵。他表示的不是划分出结点这个动作本身所带来的信息。而是属性A本身携带的信息。
+可以这样理解。以编号这一特性做出的分类决策会带来很大的信息增益。但是编号这个属性本身的固有值很大，本身就应该带来很大的信息增益。这个增益不是靠划分样本得到的。固有值低的属性就像是一张百分制的试卷，固有值低的可以比成五分制的试卷。忽略固有值只看增益是没有办法看出这个属性的好坏的。因此信息增益除以属性固有值，看作一种标准化，可以更好的表示划分数据集效果好坏。
+在CART决策树中使用基尼值作为信息纯度。但是基尼值的作用仅仅是信息纯度的另一种表示方法而已。
+剪枝 引入信息增益率这种可以有效减少将像编号这种具备多个值的属性划分数据的概率。但是数据在多次划分后仍然会产生很多的叶子节点。
+叶子节点过多，说明模型学的过多。也就是所谓的过拟合，学到了不该学到的特性。
+这时我们对数据集进行剪枝处理。
+预剪枝与后剪枝 预剪枝是在决策树决定分支属性A之前，先测验以属性A划分数据时模型的泛化能力。这需要用到验证集。
+关于验证集。吴恩达介绍说即便是很多论文中，由于疏忽也会将验证集与测试集混淆。
+验证集与测试集是必须要分开的。这点很容易理解，验证集其实是在训练模型时使用的一种手段。因此要与测试模型的测试集分开。否组无法体现出模型的泛化能力。
+因而预剪枝就是使用验证集在训练模型时就提前预测出泛化能力好坏，以此为标准改变这个结点的属性值或者改变网络形状等操作。这是训练的一种手段。
+测试集是在模型训练完成后，对模型进行泛化能力的测试。就像不能提前告诉学生考题一样。不能将验证集作为测试集。
+而后剪枝是在决策树生成后，删除某些属性后，通过验证集查看是否带来了泛化能力的提高。
+个人感觉预剪枝在构造树之前就选好了使用的属性，后剪枝在树构造后进行剪枝，是会改变树的形状的，也许操作会复杂一些。
+但是预剪枝也许会剪掉一些不该剪的分支。通过书上的对比图可以看出，后剪枝保留的分支是比较多的，因此也许预剪枝面临着欠拟合的风险。
+连续属性值 在构造决策树时还可能会用到连续的属性值A。对连续值的处理就是将其离散化为离散属性。很容易理解只需要将他们聚类，就可以变为离散值。
+我们用A的一个离散值T。大于T小于T的自然被分为两类。连续值也就变成了离散值。离散值T如何选取呢?
+二分法 将A递增或递减可以排序。Ai与Ai+1之间的任何一个值都可以将他们分开。T就可在任意两个A出现的属性值之间选择。两者的中值点比较好计算，这种方法也就被称作二分法。
+选择标准自然是选择点所带来的信息增益。
+缺失值处理 在构建决策树时面临的另一个问题时缺失值，几乎所有的机器学习都需要解决这个问题。放弃不完整的样本是对信息的一种浪费。
+为了使用这些带有缺失值的样本，需要解决两个问题：如何选择属性值A。样本在属性值A上缺失的话如何划分该样本。
+在选择划分的属性时，同样是通过衡量计算出的信息增益的大小来选择属性的，但是在计算信息增益时，只有在属性值A上没有缺失的样本才能用来判断属性A的优劣。
+因此用到计算信息增益的样本并不是全集，而是无缺失值的子集。因为只有当样本无缺失时才有信息，当样本有缺失时信息熵就为零，所以这个结果乘无缺失样本的比例。
+但是当样本在属性值A上的值缺失时，仅仅这样做无法将样本正确分类。这里还提供了一种概率的思路。
+首先赋予样本一个权值。若这个样本在这个属性A上没有缺失，那么它就被正确分类。反之，无法正确分类就将这个权值按照已知的比例划分成V份，这个V就是离散属性A所具有的V个值。
+然后将这V份分别分类到V个子结点。表现在权重上就是这个样本的权重会按照比例划分成V个子样本的权重。这V个子样本分别具备各自在属性A上的取值AV。
+多变量决策树 为了提高模型的泛化性能。很容易单变量的决策树出现在坐标空间中是以多条平行于坐标轴的线组成的。这样的模型拟合的也许不是很好，泛化性也很差。所以我们使用多变量决策让决策树可以使用斜线来划分数据集。让决策树可以更好的拟合目标函数。
+poly = PolynomialFeatures(degree=2, interaction_only=True, include_bias=False) train_new_features=poly.fit_transform(X_train[[&amp;#39;breathes&amp;#39;,&amp;#39;tail&amp;#39;]]) test_new_features=poly.transform(X_test[[&amp;#39;breathes&amp;#39;,&amp;#39;tail&amp;#39;]]) X_new_train = np.concatenate((X_train, train_new_features), axis=1) X_new_test = np.concatenate((X_test, test_new_features), axis=1) 聚类 K均值 多次迭代更新均值向量，迭代过程如下：
+计算各样本与均值向量的距离，将距离最近的划入对应的分类簇中。
+对每个分类簇计算均值向量替代。
+初始化质心时可以随机选取一个样本作为均值向量u1。
+从其余各样本中选择一个作为U2。选择样本时，距离已选质心的距离和越大的被选中几率越高。依次选出K个初始质心。
+K值的确定会影响到聚类的结果。使用手肘法合理选择K值。
+计算样本与与质心距离时，可以预先储存出各个样本之间的聚集矩阵。利用三角形原理快速比较距离。
+数据归一化，消除量纲影响。\</description>
+    </item>
+    
+    <item>
+      <title>About Hugo</title>
+      <link>https://hasasak.github.io/about-hugo/</link>
+      <pubDate>Wed, 09 Apr 2014 00:00:00 +0000</pubDate>
+      
+      <guid>https://hasasak.github.io/about-hugo/</guid>
+      <description>Hugo is the world’s fastest framework for building websites. It is written in Go.
+It makes use of a variety of open source projects including:
+ https://github.com/russross/blackfriday https://github.com/alecthomas/chroma https://github.com/muesli/smartcrop https://github.com/spf13/cobra https://github.com/spf13/viper  Learn more and contribute on GitHub.</description>
+    </item>
+    
+  </channel>
+</rss>
