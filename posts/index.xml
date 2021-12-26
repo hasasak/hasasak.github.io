@@ -6,8 +6,93 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en-us</language>
 		<copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright>
-		<lastBuildDate>Sun, 12 Dec 2021 00:00:00 +0000</lastBuildDate>
+		<lastBuildDate>Sun, 26 Dec 2021 00:00:00 +0000</lastBuildDate>
 		<atom:link href="https://hasasak.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>BLEU</title>
+			<link>https://hasasak.github.io/posts/bleu/</link>
+			<pubDate>Sun, 26 Dec 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://hasasak.github.io/posts/bleu/</guid>
+			<description>N-gram IBM在2002提出的，用于机器翻译任务的评价。原文；BLEU: a Method for Automatic Evaluation of Machine Translation 它的总体思想就是准确率，假如给定标准译文reference，神经网络生成的句子是candidate，句子长度为n，candidate中有m个单词出现在reference，m/n就是bleu的1-gram的计算公式。 N-gram中N指的是连续的N个单词。 N-gram的基本思想是将文本里面的内容按照字节进行大小为N的滑动窗口操作，形成了长度是N的字节片段序列。 每一个字节片段称为gram，对所有gram的出现频度进行统计，并且按照事先设定好的阈值进行过滤，形成关键gram列表，也就是这个文本的向量特征空间，列表中的每一种gram就是一个特征向量维度。 标签序列A B C D E F 预测序列:A B B C D 1-gram=4/5 因为预测序列中有四个1-gram 出现了。 2-gram=3/4 序列所有的2-gram:AB BB BC CD 标签所有的2-gram:AB BC CD DE EF 其中只有BB没有出现。 由于马尔可夫链假设，当前这个词仅与之前几个词有关，因此不需要用链式法则追溯到第一个词，这就是N-gram。 当N更大时，词表中N-gram总数更多，约束信息更多，辨别力也更大。 当N小时，训练语料库中某个词出现的概率更大，可靠性更大。
+BLEU 由于用到N-gram，所以高阶BLEU可以衡量句子的流畅性，低阶BLEU可以衡量准确度。 计算公式分子是所有的candidate中，每一个生成语句中所有的N-gram在参考译文中出现的次数的和，的和。 分母是所有candidate中所有的N-gram的个数。 BLEU即考虑高阶也考虑低阶的N-gram. 当你预测的比原句要短很多时，会激活短句的惩罚。 更难出现的高阶的N-gram序列会占有更高的权重。</description>
+			<content type="html"><![CDATA[<h1 id="n-gram">N-gram</h1>
+<p>IBM在2002提出的，用于机器翻译任务的评价。原文；BLEU: a Method for Automatic Evaluation of Machine Translation
+它的总体思想就是准确率，假如给定标准译文reference，神经网络生成的句子是candidate，句子长度为n，candidate中有m个单词出现在reference，m/n就是bleu的1-gram的计算公式。
+N-gram中N指的是连续的N个单词。
+N-gram的基本思想是将文本里面的内容按照字节进行大小为N的滑动窗口操作，形成了长度是N的字节片段序列。
+每一个字节片段称为gram，对所有gram的出现频度进行统计，并且按照事先设定好的阈值进行过滤，形成关键gram列表，也就是这个文本的向量特征空间，列表中的每一种gram就是一个特征向量维度。
+标签序列A B C D E F   预测序列:A B B C D
+1-gram=4/5 因为预测序列中有四个1-gram 出现了。
+2-gram=3/4 序列所有的2-gram:AB BB BC CD  标签所有的2-gram:AB BC CD DE EF 其中只有BB没有出现。
+由于马尔可夫链假设，当前这个词仅与之前几个词有关，因此不需要用链式法则追溯到第一个词，这就是N-gram。
+当N更大时，词表中N-gram总数更多，约束信息更多，辨别力也更大。
+当N小时，训练语料库中某个词出现的概率更大，可靠性更大。</p>
+<h1 id="bleu">BLEU</h1>
+<p>由于用到N-gram，所以高阶BLEU可以衡量句子的流畅性，低阶BLEU可以衡量准确度。
+计算公式分子是所有的candidate中，每一个生成语句中所有的N-gram在参考译文中出现的次数的和，的和。
+分母是所有candidate中所有的N-gram的个数。
+BLEU即考虑高阶也考虑低阶的N-gram.
+当你预测的比原句要短很多时，会激活短句的惩罚。
+更难出现的高阶的N-gram序列会占有更高的权重。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>embedding</title>
+			<link>https://hasasak.github.io/posts/%E8%AF%8D%E5%B5%8C%E5%85%A5embedding/</link>
+			<pubDate>Sun, 26 Dec 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://hasasak.github.io/posts/%E8%AF%8D%E5%B5%8C%E5%85%A5embedding/</guid>
+			<description>one-hot 独热编码虽然可以表示出词袋中的每一个词，但是这些词之前没有关系。而且维度比较高。使用词嵌入的方法可以对它降维和表示出这些词之间的关系</description>
+			<content type="html"><![CDATA[<h1 id="one-hot">one-hot</h1>
+<p>独热编码虽然可以表示出词袋中的每一个词，但是这些词之前没有关系。而且维度比较高。使用词嵌入的方法可以对它降维和表示出这些词之间的关系</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>seq2seq</title>
+			<link>https://hasasak.github.io/posts/seq2seq/</link>
+			<pubDate>Sun, 26 Dec 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://hasasak.github.io/posts/seq2seq/</guid>
+			<description>目的 DNN(深度神经网络)应用于输入与目标可以用固定维数编码的问题，但在机器翻译或是语音识别中，向量长度不是固定的。
+结构 seq2seq由一个编码器和一个解码器构成。编码器解码器都是LSTM。编码器输出RNN最后一层的最后时刻的隐藏层作为语义向量 语义向量作为解码器第一时刻的输入。解码器t时刻的输入是t-1的输出与t-1的隐藏层。有时也将语义向量作为额外的输入。 编码器RNN可以看到全部的句子整体，所以它可以是双向RNN，但解码器是看不到完整的输入序列，所以不能是双向的。
+训练 为了更好的训练解码器，尽量减少误差的累计。编码器训练时t时刻的输入是t-1时刻的隐含层与t-1时刻的参考译文。
+缺点 并行度低，预测t需要用到t-1的结果，难以训练。 无法处理时序比较长的序列。在翻译一个句子时不会根据句子的某一个部分去翻译。虽然信息会包含在最后输出的隐含层中。但是隐含层过长就会发生梯度消失。</description>
+			<content type="html"><![CDATA[<h1 id="目的">目的</h1>
+<p>DNN(深度神经网络)应用于输入与目标可以用固定维数编码的问题，但在机器翻译或是语音识别中，向量长度不是固定的。</p>
+<h1 id="结构">结构</h1>
+<p>seq2seq由一个编码器和一个解码器构成。编码器解码器都是LSTM。编码器输出RNN最后一层的最后时刻的隐藏层作为语义向量
+语义向量作为解码器第一时刻的输入。解码器t时刻的输入是t-1的输出与t-1的隐藏层。有时也将语义向量作为额外的输入。
+编码器RNN可以看到全部的句子整体，所以它可以是双向RNN，但解码器是看不到完整的输入序列，所以不能是双向的。</p>
+<h1 id="训练">训练</h1>
+<p>为了更好的训练解码器，尽量减少误差的累计。编码器训练时t时刻的输入是t-1时刻的隐含层与t-1时刻的参考译文。</p>
+<h1 id="缺点">缺点</h1>
+<p>并行度低，预测t需要用到t-1的结果，难以训练。
+无法处理时序比较长的序列。在翻译一个句子时不会根据句子的某一个部分去翻译。虽然信息会包含在最后输出的隐含层中。但是隐含层过长就会发生梯度消失。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>引入注意力机制的seq2seq</title>
+			<link>https://hasasak.github.io/posts/%E5%BC%95%E5%85%A5%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84seq2seq/</link>
+			<pubDate>Sun, 26 Dec 2021 00:00:00 +0000</pubDate>
+			
+			<guid>https://hasasak.github.io/posts/%E5%BC%95%E5%85%A5%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6%E7%9A%84seq2seq/</guid>
+			<description>注意力机制中的query key,value对的具体内容 在seq2seq中使用最后一层的最后一个时刻的隐含层作为上下文。 但是在引入注意力机制后，解码器可以选择注意编码器中任意一时刻t的隐含层作为隐含层的输入。 为了可导，使用的软注意力。 key value对是编码器的每一时刻的输出，注意力机制出现key value对在seq2seq里面是一个向量。t时刻的隐含层，既是key也是value。 query是在解码器中上一时刻的输出。 query与每一时刻的key做内积，内积的大小表示一种匹配度。假设有一排储物箱，那qurey是钥匙，key是锁孔，value是柜子里面的东西。qurey和key越匹配，取出的value就越多。 将这种匹配度进行softmax操作，会得到一个概率分布，作为每一个value的权值。这些value组合之后和t-1时刻的输出嵌入合并。这个合并向量和t-1时刻的隐含层作为编码器输入预测出当前时刻的词。 此时seq2seq就具有了注意力机制。</description>
+			<content type="html"><![CDATA[<h1 id="注意力机制中的query--keyvalue对的具体内容">注意力机制中的query  key,value对的具体内容</h1>
+<p>在seq2seq中使用最后一层的最后一个时刻的隐含层作为上下文。
+但是在引入注意力机制后，解码器可以选择注意编码器中任意一时刻t的隐含层作为隐含层的输入。
+为了可导，使用的软注意力。
+key value对是编码器的每一时刻的输出，注意力机制出现key value对在seq2seq里面是一个向量。t时刻的隐含层，既是key也是value。
+query是在解码器中上一时刻的输出。
+query与每一时刻的key做内积，内积的大小表示一种匹配度。假设有一排储物箱，那qurey是钥匙，key是锁孔，value是柜子里面的东西。qurey和key越匹配，取出的value就越多。
+将这种匹配度进行softmax操作，会得到一个概率分布，作为每一个value的权值。这些value组合之后和t-1时刻的输出嵌入合并。这个合并向量和t-1时刻的隐含层作为编码器输入预测出当前时刻的词。
+此时seq2seq就具有了注意力机制。</p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>西瓜书学习记录</title>
