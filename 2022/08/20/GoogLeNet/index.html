@@ -1,0 +1,187 @@
+<html>
+<!-- Head tag -->
+<head>
+  <meta charset="UTF-8">
+
+  
+  <title>
+    GoogLeNet |
+    Hexo
+  </title>
+  
+
+
+  <meta name="description" content="">
+  <meta name="author" content="John Doe">
+  <meta property="og:title" content="GoogLeNet" />
+  <meta property="og:description" content="" />
+  <meta property='og:site_name' content='Hexo' />
+  <meta property="og:image" content="http://example.com/img/default.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:title" content="GoogLeNet" />
+
+  <meta name="twitter:image" content="http://example.com/img/default.jpg" />
+
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+    crossorigin="anonymous">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <!-- Menu -->
+    <nav id="navbar" class="navbar fixed-top navbar-expand-lg navbar-dark page-navbar gradient">
+  <div class="container">
+    <a class="navbar-brand logo" href="http://example.com">
+      Hexo</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item item">
+          
+        <li class="nav-item item">
+          <a class="nav-link" href="/">
+            Home</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" href="/archives">
+            🗂️Archives</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" target="_blank" rel="noopener" href="https://hexo.io/">
+            Hexo</a>
+        </li>
+        
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <main class="page main-page">
+        <div class="container blogPost">
+    <div class="row">
+        <div class="col-sm-9 px-md-5">
+            <h2 class="blog-post-title">
+                GoogLeNet
+            </h2>
+            <p class="meta">
+                <i class="far fa-clock"></i>
+                2022-08-20 
+            </p>
+            <!-- Content -->
+            <hr>
+<p>date: 2022-08-20 16:33:46</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="网络动机"><a href="#网络动机" class="headerlink" title="网络动机"></a>网络动机</h2><p>  提高网络性能最直接的方法就是增加网络尺寸。但是扩大网络会带来一些影响：<br>1.扩大神经网络会使得网络容易过拟合<br>2.神经网络较多参数会消耗较多的计算资源。文中提出了以下解决方案：<br>1。将全连接以及卷积层变为稀疏连接，2。同时使用了dropout的方法共同减少网络参数。<br>3.使用Max Pool和Average Pool。<br>4.使用Network in Network方法，增加网络的表现能力，这种方法可以看做是一个额外的1*1卷积层再加上一个ReLU层。NIN最重要的是降维，解决了计算瓶颈，从而解决网络尺寸受限的问题。这样就可以增加网络的深度和宽度了，而且不会有很大的性能损失。<br>5.当前最好的对象检测方法是R-CNN。R-CNN将检测问题分解为两个子问题：首先利用低级特征（颜色和超像素一致性）在分类不可知时寻找潜在目标，然后使用CNN分类器识别潜在目标所属类别。GoogLeNet在这两个阶段都进行了增强效果。</p>
+<h2 id="GoogLeNet架构细节"><a href="#GoogLeNet架构细节" class="headerlink" title="GoogLeNet架构细节"></a>GoogLeNet架构细节</h2><p><img src="/2022/08/20/GoogLeNet/a.png" alt><br><img src="/2022/08/20/GoogLeNet/b.png" alt><br>图(a)是传统的多通道卷积操作，图(b)是GoogLeNet中使用的Inception模块，两者的区别在于：</p>
+<p>Inception使用了多个不同尺寸的卷积核，还添加了池化，然后将卷积和池化结果串联在一起。<br>卷积之前有1×1的卷积操作，池化之后也有1×1的卷积操作。<br>Inception模块中的多尺寸卷积核的卷积卷积过程和普通卷积过程不同。<br>第一点不同的原因是：Inception的主要思想就是如何找出最优的局部稀疏结构并将其覆盖为近似的稠密组件，这里就是将不同的局部结构组合到了一起。<br>第二点不同的原因是：原始的卷积是广义线性模型GLM(generalized linear model)，GLM的抽象等级较低，无法很好的表达非线性特征，这种1×1的卷积操作将高相关性的节点聚集在一起。什么是高相关性节点呢？两张特征图中相同位置的节点就是相关性高的节点。假设当前层的输入大小是28×28×256，卷积核大小为1×1×256，卷积得到的输出大小为28×28×1。可以看出这种操作一方面将原来的线性模型变成了非线性模型，将高相关性节点组合到了一起，具有更强的表达能力，另一方面减少了参数个数</p>
+<h2 id="辅助分类器"><a href="#辅助分类器" class="headerlink" title="辅助分类器"></a>辅助分类器</h2><p>神经网络的中间层也具有很强的识别能力，为了利用中间层抽象的特征，在某些中间层中添加含有多层的分类器。<br><img src="/2022/08/20/GoogLeNet/c.png" alt></p>
+<h2 id="GoogLeNet网络架构"><a href="#GoogLeNet网络架构" class="headerlink" title="GoogLeNet网络架构"></a>GoogLeNet网络架构</h2><p><img src="/2022/08/20/GoogLeNet/d.png" alt><br>GoogLeNet神经网络中，使用了前两节提到的Inception模块和辅助分类器，而且由于全连接网络参数多，计算量大，容易过拟合，所以GoogLeNet没有采用AlexNet（2012年ImageNet冠军队使用的网络结构，前五层是卷积层，后三层是全连接层）中的全连接结构，直接在Inception模块之后使用Average Pool和Dropout方法，不仅起到降维作用，还在一定程度上防止过拟合。<br>在Dropout层之前添加了一个7×7的Average Pool，一方面是降维，另一方面也是对低层特征的组合。我们希望网络在高层可以抽象出图像全局的特征，那么应该在网络的高层增加卷积核的大小或者增加池化区域的大小，GoogLeNet将这种操作放到了最后的池化过程，前面的Inception模块中卷积核大小都是固定的，而且比较小，主要是为了卷积时的计算方便。<br>第二幅图中蓝色部分是卷积块，每个卷积块后都会跟一个ReLU（受限线性单元）层作为激活函数（包括Inception内部的卷积块）</p>
+<h2 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h2><p>训练7个GoogLeNet模型，其中包含一个加宽版本，其余6个模型初始化和超参数都一样，只是采样方法和样本顺序不同<br>采用模型和数据并行技术，用几个高端GPU训练一周可得到收敛(估算)<br>多个模型的训练是不同步的，超参数的变化也是不一样的，比如dropout和学习率<br>有些模型主要训练小尺寸样本，有些模型训练大尺寸样本<br>采样时，样本尺寸缩放从8%到100%，宽高比随机选取3/4或4/3（多尺度）<br>将图像作光度扭曲，也就是随机更改图像的对比度，亮度和颜色。这样可以增加网络对这些属性的不变性<br>使用随机插值方法重置图像尺寸（因为网络输入层的大小是固定的），<br>使用到的随机插值方法：双线性插值，区域插值，最近邻插值，三次方插值，这些插值方法等概率的被选择使用。图像放大时，像素也相应地增加 ，增加的过程就是“插值”程序自动选择信息较好的像素作为增加的像素，而并非只使用临近的像素，所以在放大图像时，图像看上去会比较平滑、干净<br>改变超参数（反向传播若干次之后改变超参数，或者误差达到某阈值时改变超参数）</p>
+<h2 id="测试样本处理"><a href="#测试样本处理" class="headerlink" title="测试样本处理"></a>测试样本处理</h2><p>对于一个测试样本，将图像的短边缩放成4种尺寸，分别为256，288，320，352。<br>从每种尺寸的图像的左边，中间，右边（或者上面，中间，下面）分别截取一个方形区域。<br>从每个方形区域的4个拐角和中心分别截取一个224×224区域，再将方形区域缩小到224×224，这样每个方形区域能得到6张大小为224×224的图像，加上它们的镜像版本（将图像水平翻转），一共得到4×3×6×2=144张图像。</p>
+<h1 id><a href="#" class="headerlink" title="#"></a>#</h1>
+            <br />
+            <p class="meta">
+                
+            </p>
+        </div>
+
+        <div class="col-sm-3">
+             
+<span><b> TL;DR</b></span>
+<p>
+	Yet another hexo theme.
+</p>
+<hr />
+
+
+<span><b> TL;DR 2</b></span>
+<p>
+	No, not another one :/
+</p>
+<hr />
+
+ 
+
+<span
+	><a href="https://twitter.com/hexojs" target="_blank" rel="noopener"
+		><b
+			><i class="fab fa-twitter-square"></i>
+			<i class="fas fa-at"></i>
+			hexojs</b
+		></a
+	></span
+>
+<br />
+<a class="twitter-timeline" data-height="800" data-dnt="true" data-chrome="nofooter transparent noheader noborders " target="_blank" rel="noopener" href="https://twitter.com/hexojs?ref_src=twsrc%5Etfw"></a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+        </div>
+    </div>
+</div>
+<!-- Menu fade on scroll -->
+<script>
+    var isScrolling;
+    var prevScrollpos = window.pageYOffset;
+    window.addEventListener(
+        'scroll',
+        function(event) {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(function() {
+                var currentScrollPos = window.pageYOffset;
+                if (prevScrollpos > currentScrollPos) {
+                    $('#navbar').slideDown();
+                } else {
+                    $('#navbar').slideUp();
+                }
+                prevScrollpos = currentScrollPos;
+            }, 66);
+        },
+        false
+    );
+</script>
+
+
+<a class="float-left gradient btn paginationbtn" href="/2022/08/19/hello-world/"><i class="fas fa-chevron-left"></i></a>
+
+
+    </main>
+    <!-- Footer -->
+    <footer class="page-footer">
+  <div class="container">
+    <div class="social-icons">
+      
+      <a href="https://hexo.io/" title="Hexo.io" target="_blank" rel="noopener" class="fas fa-home"></a>
+      
+      <a href="https://twitter.com/hexojs" title="@hexojs" target="_blank" rel="noopener" class="fab fa-twitter"></a>
+      
+      <a href="https://github.com/RandomAdversary/Gradient/issues" title="Report issue" target="_blank" rel="noopener" class="fas fa-bug"></a>
+      
+    </div>
+  </div>
+</footer>
+    <!-- After footer scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>
