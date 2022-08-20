@@ -4,6 +4,19 @@
   
     
     <entry>
+      <title>VGG</title>
+      <link href="/2022/08/20/VGG/"/>
+      <url>/2022/08/20/VGG/</url>
+      
+        <content type="html"><![CDATA[<p>date: 2022-08-20 16:57:17</p><h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="VGG网络动机"><a href="#VGG网络动机" class="headerlink" title="VGG网络动机"></a>VGG网络动机</h2><p>通过使用小卷积核代替大卷积核的方法，不改变感受野的同时减小网络参数。具体来说，vgg中使用三个3<em>3大小的卷积核代替7<strong>7的卷积核，使用两个3</strong>3的卷积核代替5*</em>5的卷积核。<br>这样做感受野不变的同时，增加了网络的深度，同时每层小卷积核后面都有RELU激活函数，（增加了激活层的个数）使网络引入更多非线性层。</p><h2 id="VGG的优缺点"><a href="#VGG的优缺点" class="headerlink" title="VGG的优缺点"></a>VGG的优缺点</h2><h3 id="VGG的优点"><a href="#VGG的优点" class="headerlink" title="VGG的优点"></a>VGG的优点</h3><p>VGGNet的结构非常简洁，整个网络都使用了同样大小的卷积核尺寸（3x3）和最大池化尺寸（2x2）。<br>几个小滤波器（3x3）卷积层的组合比一个大滤波器（5x5或7x7）卷积层好：<br>验证了通过不断加深网络结构可以提升性能。</p><h3 id="VGG的缺点"><a href="#VGG的缺点" class="headerlink" title="VGG的缺点"></a>VGG的缺点</h3><p>VGG耗费更多计算资源，并且使用了更多的参数（这里不是3x3卷积的锅），导致更多的内存占用（140M）。其中绝大多数的参数都是来自于第一个全连接层。而且据其他人的实验可得<br>去掉这些全连接层并不会使网络效果变差。<br><img src="/2022/08/20/VGG/a.jpg" alt></p><h2 id="rule函数"><a href="#rule函数" class="headerlink" title="rule函数"></a>rule函数</h2><p>relu函数相较于sigmoid函数，梯度只有0，1.缓解了网络较深时梯度消失的问题。同时0代表网络节点未被激活使得网络具有一定的稀疏性。也可以抑制过拟合现象。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GoogLeNet</title>
       <link href="/2022/08/20/GoogLeNet/"/>
       <url>/2022/08/20/GoogLeNet/</url>
