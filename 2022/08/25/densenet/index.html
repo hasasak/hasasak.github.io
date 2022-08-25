@@ -5,7 +5,7 @@
 
   
   <title>
-    VGG |
+    densenet |
     学习笔记
   </title>
   
@@ -13,13 +13,13 @@
 
   <meta name="description" content="">
   <meta name="author" content="张若淇">
-  <meta property="og:title" content="VGG" />
+  <meta property="og:title" content="densenet" />
   <meta property="og:description" content="" />
   <meta property='og:site_name' content='学习笔记' />
   <meta property="og:image" content="http://example.com/img/default.jpg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:description" content="" />
-  <meta name="twitter:title" content="VGG" />
+  <meta name="twitter:title" content="densenet" />
 
   <meta name="twitter:image" content="http://example.com/img/default.jpg" />
 
@@ -77,18 +77,17 @@
     <div class="row">
         <div class="col-sm-9 px-md-5">
             <h2 class="blog-post-title">
-                VGG
+                densenet
             </h2>
             <p class="meta">
                 <i class="far fa-clock"></i>
-                2022-08-20 
+                2022-08-25 
             </p>
             <!-- Content -->
-            <p>date: 2022-08-20 16:57:17</p>
-<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="VGG网络动机"><a href="#VGG网络动机" class="headerlink" title="VGG网络动机"></a>VGG网络动机</h2><p>通过使用小卷积核代替大卷积核的方法，不改变感受野的同时减小网络参数。具体来说，vgg中使用三个3<em>3大小的卷积核代替7<strong>7的卷积核，使用两个3</strong>3的卷积核代替5*</em>5的卷积核。<br>这样做感受野不变的同时，增加了网络的深度，同时每层小卷积核后面都有RELU激活函数，（增加了激活层的个数）使网络引入更多非线性层。</p>
-<h2 id="VGG的优缺点"><a href="#VGG的优缺点" class="headerlink" title="VGG的优缺点"></a>VGG的优缺点</h2><h3 id="VGG的优点"><a href="#VGG的优点" class="headerlink" title="VGG的优点"></a>VGG的优点</h3><p>VGGNet的结构非常简洁，整个网络都使用了同样大小的卷积核尺寸（3x3）和最大池化尺寸（2x2）。<br>几个小滤波器（3x3）卷积层的组合比一个大滤波器（5x5或7x7）卷积层好：<br>验证了通过不断加深网络结构可以提升性能。</p>
-<h3 id="VGG的缺点"><a href="#VGG的缺点" class="headerlink" title="VGG的缺点"></a>VGG的缺点</h3><p>VGG耗费更多计算资源，并且使用了更多的参数（这里不是3x3卷积的锅），导致更多的内存占用（140M）。其中绝大多数的参数都是来自于第一个全连接层。而且据其他人的实验可得<br>去掉这些全连接层并不会使网络效果变差。<br><img src="/2022/08/20/VGG/a.jpg" alt></p>
-<h2 id="rule函数"><a href="#rule函数" class="headerlink" title="rule函数"></a>rule函数</h2><p>relu函数相较于sigmoid函数，梯度只有0，1.缓解了网络较深时梯度消失的问题。同时0代表网络节点未被激活使得网络具有一定的稀疏性。也可以抑制过拟合现象。</p>
+            <p>date: 2022-08-25 09:19:53</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在深度学习网络中，随着网络深度的加深，梯度消失问题会愈加明显，目前很多论文都针对这个问题提出了解决方案，比如ResNet，Highway Networks，Stochastic depth，FractalNets等，尽管这些算法的网络结构有差别，但是核心都在于：create short paths from early layers to later layers。那么作者是怎么做呢？延续这个思路，那就是在保证网络中层与层之间最大程度的信息传输的前提下，直接将所有层连接起来！<br>dense block的结构图如下。在传统的卷积神经网络中，如果你有L层，那么就会有L个连接，但是在DenseNet中，会有L(L+1)/2个连接。简单讲，就是每一层的输入来自前面所有层的输出。<br><img src="/2022/08/25/densenet/1.jpg" alt></p>
+<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p>DenseNet的结构图，在这个结构图中包含了3个dense block。作者将DenseNet分成多个dense block，原因是希望各个dense block内的feature map的size统一，这样在做concatenation就不会有size的问题。<br><img src="/2022/08/25/densenet/2.jpg" alt><br>DenseNet和ResNet的一个明显区别是，ResNet是求和，而DenseNet是做一个拼接，每一层网络的输入包括前面所有层网络的输出。<br>整个网络的结构图。这个表中的k=32，k=48中的k是growth rate，表示每个dense block中每层输出的feature map个数。为了避免网络变得很宽，作者都是采用较小的k，比如32这样，作者的实验也表明小的k可以有更好的效果。根据dense block的设计，后面几层可以得到前面所有层的输入，因此concat后的输入channel还是比较大的。另外这里每个dense block的3<em>3卷积前面都包含了一个1</em>1的卷积操作，就是所谓的bottleneck layer，目的是减少输入的feature map数量，既能降维减少计算量，又能融合各个通道的特征，何乐而不为。另外作者为了进一步压缩参数，在每两个dense block之间又增加了1<em>1的卷积操作。因此在后面的实验对比中，如果你看到DenseNet-C这个网络，表示增加了这个Translation layer，该层的1</em>1卷积的输出channel默认是输入channel到一半。如果你看到DenseNet-BC这个网络，表示既有bottleneck layer，又有Translation layer。<br><img src="/2022/08/25/densenet/3.jpg" alt></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>DenseNet核心思想在于建立了不同层之间的连接关系，充分利用了feature，进一步减轻了梯度消失问题，加深网络不是问题，而且训练效果非常好。另外，利用bottleneck layer，Translation layer以及较小的growth rate使得网络变窄，参数减少，有效抑制了过拟合，同时计算量也减少了。DenseNet优点很多，而且在和ResNet的对比中优势还是非常明显的。</p>
 
             <br />
             <p class="meta">
@@ -153,10 +152,8 @@
 </script>
 
 
-<a class="float-left gradient btn paginationbtn" href="/2022/08/20/GoogLeNet/"><i class="fas fa-chevron-left"></i></a>
+<a class="float-left gradient btn paginationbtn" href="/2022/08/25/resnet/"><i class="fas fa-chevron-left"></i></a>
 
-
-<a class="float-right gradient btn paginationbtn" href="/2022/08/22/SEnet/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->

@@ -1,0 +1,200 @@
+<html>
+<!-- Head tag -->
+<head>
+  <meta charset="UTF-8">
+
+  
+  <title>
+    SEnet |
+    学习笔记
+  </title>
+  
+
+
+  <meta name="description" content="">
+  <meta name="author" content="张若淇">
+  <meta property="og:title" content="SEnet" />
+  <meta property="og:description" content="" />
+  <meta property='og:site_name' content='学习笔记' />
+  <meta property="og:image" content="http://example.com/img/default.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:title" content="SEnet" />
+
+  <meta name="twitter:image" content="http://example.com/img/default.jpg" />
+
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+    crossorigin="anonymous">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <!-- Menu -->
+    <nav id="navbar" class="navbar fixed-top navbar-expand-lg navbar-dark page-navbar gradient">
+  <div class="container">
+    <a class="navbar-brand logo" href="http://example.com">
+      学习笔记</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item item">
+          
+        <li class="nav-item item">
+          <a class="nav-link" href="/">
+            Home</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" href="/archives">
+            🗂️Archives</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" target="_blank" rel="noopener" href="https://hexo.io/">
+            Hexo</a>
+        </li>
+        
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <main class="page main-page">
+        <div class="container blogPost">
+    <div class="row">
+        <div class="col-sm-9 px-md-5">
+            <h2 class="blog-post-title">
+                SEnet
+            </h2>
+            <p class="meta">
+                <i class="far fa-clock"></i>
+                2022-08-22 
+            </p>
+            <!-- Content -->
+            <p>date: 2022-08-22 20:02:38</p>
+<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>卷积神经网络的核心构件是卷积算子，它可以通过融合每一层局部接受域内的空间信息和信道信息来构建信息特征。<br>先前的研究主要是加强网络对空间尺度内的表示能力。而SEnet更关注通道间的关系。设计了一种SE块<br>这种SE块既可以堆叠成一个网络用来完成相关任务，也可以在现有模型中加入这种通道注意力的机制用来提高原始模型的表示能力</p>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>首先输入神经网络的图或是特征图的尺度如下<img src="/2022/08/22/SEnet/3.png" alt><br>先前的神经网络的工作都是在空间（HW）尺度内改进网络的效果。如何在空间尺度内改进网络效果呢？<br>首先回顾一下卷积<br>放一张卷积与全连接的对比图<br><img src="/2022/08/22/SEnet/4.png" alt><br><img src="/2022/08/22/SEnet/5.png" alt><br>对比发现，卷积相较于全连接。首先就是可以直观的表示特征。与卷积核相似度高的区域得分会更高。<br>卷积的参数更少，这可以增加网络的鲁棒性。<br>但是卷积相较于全连接的缺点也很明显。卷积的提取出的特征并不是全局的特征，受卷积的感受野的限制<br>那么如何在空间尺度上提升网络的性能呢？<br>很显而易见的是增加网络的感受野，使得提取出的特征尽可能是全局特征。<br>增加感受野的方法如下：下采样（池化），增大卷积核，加深网络<br>VGG使用减小卷积核的方法在增大感受野的同时减少参数<br><img src="/2022/08/22/SEnet/6.png" alt><br>为了解决在加深网络的同时带来的问题，resnet引入了残差模块，highwaynet与之类似。<br><img src="/2022/08/22/SEnet/7.png" alt></p>
+<h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><p>之前的研究表明加深网络的深度可以增强网络的表示能力。为了加深网络出现了一些方法。比如vgg使用小卷积核增加网络深度，使用Batch Normalization (BN)来加快网络的学习速度。<br>ResNeT加入残差块，HighNet使用门控机制来调节一些层的信息会走捷径（一些信息不经过卷积层直接来到下一层）。分组卷积增加卷积次数增加卷积深度。</p>
+<h2 id="注意力门控机制"><a href="#注意力门控机制" class="headerlink" title="注意力门控机制"></a>注意力门控机制</h2><p>注意力机制可以被解释为将一些可计算资源不按照平均分配而是将最多的计算资源分配到信息最丰富的部分中的一种手段。文中的SE块就是一种注意力门控机制</p>
+<h2 id="SQUEEZE-AND-EXCITATION-BLOCKS"><a href="#SQUEEZE-AND-EXCITATION-BLOCKS" class="headerlink" title="SQUEEZE-AND-EXCITATION BLOCKS"></a>SQUEEZE-AND-EXCITATION BLOCKS</h2><p><img src="/2022/08/22/SEnet/1.png" alt><br>如图所示，SQUEEZE-AND-EXCITATION BLOCKS是在卷积操作之后，先压缩成一个C维的向量，再对这个向量进行激活得到一个权重向量。并将这个这个权重作为对输出结果C的权重。得到校准后的结果可以直接作为下一层的输入。</p>
+<h3 id="SQUEEZE"><a href="#SQUEEZE" class="headerlink" title="SQUEEZE"></a>SQUEEZE</h3><p>Squeeze部分就是对每个通道进行全局聚合。SEnet使用全局平均池化，也可以使用其他更复杂的聚合方式，但是使用这种简单的聚合方式已经可以提升网络的性能。</p>
+<h2 id="激活"><a href="#激活" class="headerlink" title="激活"></a>激活</h2><p>SE块中的激活函数需要满足两个条件：<br>1.这个激活需要是非线性的，2，这个激活应该是非互斥的（即应该允许出现多个通道可以被高响应的而不是只有一个通道被高响应）</p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p><img src="/2022/08/22/SEnet/8.png" alt><br><img src="/2022/08/22/SEnet/9.png" alt><br>se块在VGG和RESNET中的应用。</p>
+<h2 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h2><h3 id="减速比"><a href="#减速比" class="headerlink" title="减速比"></a>减速比</h3><p><img src="/2022/08/22/SEnet/10.png" alt><br>比较效果时观察准确率的同时还应注重参数量和计算速度。综合两个结果</p>
+<h3 id="聚合方式"><a href="#聚合方式" class="headerlink" title="聚合方式"></a>聚合方式</h3><p><img src="/2022/08/22/SEnet/11.png" alt><br>最大池化可以提取特征纹理， 最大池化提取边缘等“最重要”的特征</p>
+<p>平均池化可以保留背景信息，平均池化提取的特征更加smoothly</p>
+<p>ResNet在输入全连接层之前利用Kernel Size=7的AvgPooling来降维。反之为了减少无用信息的影响时用maxpool。网络浅层用maxpooling来进行降维。</p>
+<p>但是全局平均池化的窗口太大了尤其浅层使用GMP其中一个像素点对应的感受野非常小。不能捕捉到全局信息。</p>
+<p>CAM提到，在分类问题中gmp和gap并看不出孰优孰劣。但是要让卷积神经网络的对其分类结果给出一个合理解释，必须要充分利用好最后一个卷积层。GAP相较于GMP来说更充分的利用了空间信息</p>
+<p>文章中处于对全局信息的考虑使用了GAP</p>
+<h3 id="使用位置"><a href="#使用位置" class="headerlink" title="使用位置"></a>使用位置</h3><p><img src="/2022/08/22/SEnet/12.png" alt><br>resnet的四个阶段中使用，效果可以叠加。因为卷积神经网络深层浅层具有不同的效果。浅层神经网络提取类无关的特征。深层卷积网络作用是提取抽象的类相关的特征。因此四个阶段中的SE模块也有不同的作用</p>
+<h3 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h3><p>为什么Sigmoid效果最好，原文中提到：需要的激活函数应具备两个性质：<br>1.需要非线性<br>2.需要同时确保多个通道同时具有较高的权重，而不是只有一个通道获得高权重。<br>对比两个激活函数sigmoid函数将值限定在0-1之间，不会出现特别大的值分走过多的权重。<br><img src="/2022/08/22/SEnet/13.png" alt><br><img src="/2022/08/22/SEnet/14.png" alt><br><img src="/2022/08/22/SEnet/15.png" alt></p>
+<h2 id="SE块的插入位置"><a href="#SE块的插入位置" class="headerlink" title="SE块的插入位置"></a>SE块的插入位置</h2><p><img src="/2022/08/22/SEnet/16.png" alt><br><img src="/2022/08/22/SEnet/17.png" alt><br>由结果看出，SE块需要插入在分支聚合前</p>
+<h2 id="SE-3-3"><a href="#SE-3-3" class="headerlink" title="SE_3*3"></a>SE_3*3</h2><p><img src="/2022/08/22/SEnet/18.png" alt><br><img src="/2022/08/22/SEnet/19.png" alt><br>目的减少参数，将SE块放在中间通道少的地方，准确率略微下降，但是参数量显著减少。</p>
+
+            <br />
+            <p class="meta">
+                
+            </p>
+        </div>
+
+        <div class="col-sm-3">
+             
+<span><b> TL;DR</b></span>
+<p>
+	Yet another hexo theme.
+</p>
+<hr />
+
+
+<span><b> TL;DR 2</b></span>
+<p>
+	No, not another one :/
+</p>
+<hr />
+
+ 
+
+<span
+	><a href="https://twitter.com/hexojs" target="_blank" rel="noopener"
+		><b
+			><i class="fab fa-twitter-square"></i>
+			<i class="fas fa-at"></i>
+			hexojs</b
+		></a
+	></span
+>
+<br />
+<a class="twitter-timeline" data-height="800" data-dnt="true" data-chrome="nofooter transparent noheader noborders " target="_blank" rel="noopener" href="https://twitter.com/hexojs?ref_src=twsrc%5Etfw"></a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+        </div>
+    </div>
+</div>
+<!-- Menu fade on scroll -->
+<script>
+    var isScrolling;
+    var prevScrollpos = window.pageYOffset;
+    window.addEventListener(
+        'scroll',
+        function(event) {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(function() {
+                var currentScrollPos = window.pageYOffset;
+                if (prevScrollpos > currentScrollPos) {
+                    $('#navbar').slideDown();
+                } else {
+                    $('#navbar').slideUp();
+                }
+                prevScrollpos = currentScrollPos;
+            }, 66);
+        },
+        false
+    );
+</script>
+
+
+<a class="float-left gradient btn paginationbtn" href="/2022/08/20/VGG/"><i class="fas fa-chevron-left"></i></a>
+
+
+<a class="float-right gradient btn paginationbtn" href="/2022/08/25/resnet/"><i class="fas fa-chevron-right"></i></a>
+
+    </main>
+    <!-- Footer -->
+    <footer class="page-footer">
+  <div class="container">
+    <div class="social-icons">
+      
+      <a href="https://hexo.io/" title="Hexo.io" target="_blank" rel="noopener" class="fas fa-home"></a>
+      
+      <a href="https://twitter.com/hexojs" title="@hexojs" target="_blank" rel="noopener" class="fab fa-twitter"></a>
+      
+      <a href="https://github.com/RandomAdversary/Gradient/issues" title="Report issue" target="_blank" rel="noopener" class="fas fa-bug"></a>
+      
+    </div>
+  </div>
+</footer>
+    <!-- After footer scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

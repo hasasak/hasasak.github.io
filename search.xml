@@ -4,6 +4,45 @@
   
     
     <entry>
+      <title>densenet</title>
+      <link href="/2022/08/25/densenet/"/>
+      <url>/2022/08/25/densenet/</url>
+      
+        <content type="html"><![CDATA[<p>date: 2022-08-25 09:19:53</p><h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在深度学习网络中，随着网络深度的加深，梯度消失问题会愈加明显，目前很多论文都针对这个问题提出了解决方案，比如ResNet，Highway Networks，Stochastic depth，FractalNets等，尽管这些算法的网络结构有差别，但是核心都在于：create short paths from early layers to later layers。那么作者是怎么做呢？延续这个思路，那就是在保证网络中层与层之间最大程度的信息传输的前提下，直接将所有层连接起来！<br>dense block的结构图如下。在传统的卷积神经网络中，如果你有L层，那么就会有L个连接，但是在DenseNet中，会有L(L+1)/2个连接。简单讲，就是每一层的输入来自前面所有层的输出。<br><img src="/2022/08/25/densenet/1.jpg" alt></p><h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p>DenseNet的结构图，在这个结构图中包含了3个dense block。作者将DenseNet分成多个dense block，原因是希望各个dense block内的feature map的size统一，这样在做concatenation就不会有size的问题。<br><img src="/2022/08/25/densenet/2.jpg" alt><br>DenseNet和ResNet的一个明显区别是，ResNet是求和，而DenseNet是做一个拼接，每一层网络的输入包括前面所有层网络的输出。<br>整个网络的结构图。这个表中的k=32，k=48中的k是growth rate，表示每个dense block中每层输出的feature map个数。为了避免网络变得很宽，作者都是采用较小的k，比如32这样，作者的实验也表明小的k可以有更好的效果。根据dense block的设计，后面几层可以得到前面所有层的输入，因此concat后的输入channel还是比较大的。另外这里每个dense block的3<em>3卷积前面都包含了一个1</em>1的卷积操作，就是所谓的bottleneck layer，目的是减少输入的feature map数量，既能降维减少计算量，又能融合各个通道的特征，何乐而不为。另外作者为了进一步压缩参数，在每两个dense block之间又增加了1<em>1的卷积操作。因此在后面的实验对比中，如果你看到DenseNet-C这个网络，表示增加了这个Translation layer，该层的1</em>1卷积的输出channel默认是输入channel到一半。如果你看到DenseNet-BC这个网络，表示既有bottleneck layer，又有Translation layer。<br><img src="/2022/08/25/densenet/3.jpg" alt></p><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>DenseNet核心思想在于建立了不同层之间的连接关系，充分利用了feature，进一步减轻了梯度消失问题，加深网络不是问题，而且训练效果非常好。另外，利用bottleneck layer，Translation layer以及较小的growth rate使得网络变窄，参数减少，有效抑制了过拟合，同时计算量也减少了。DenseNet优点很多，而且在和ResNet的对比中优势还是非常明显的。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>resnet</title>
+      <link href="/2022/08/25/resnet/"/>
+      <url>/2022/08/25/resnet/</url>
+      
+        <content type="html"><![CDATA[<p>date: 2022-08-25 09:19:40</p><h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="背景："><a href="#背景：" class="headerlink" title="背景："></a>背景：</h2><p>在卷积神经网络中，增加网络深度意味着增加网络的性能，但是这个性能不是无限增加的。当网络增加到一定深度后继续增加网络深度网络的性能可能会随之下降。这是由于神经网络传播过程中信息的丢失和损耗造成的。<br>同时还会有梯度消失或者梯度爆炸的现象。</p><h2 id="概括："><a href="#概括：" class="headerlink" title="概括："></a>概括：</h2><p>resnet解决信息损耗的方法是shortcut或者skip connections。如图所示<img src="/2022/08/25/resnet/2.png" alt>。为了解决这个问题。假设现有一个比较浅的网络（Shallow Net）已达到了饱和的准确率，这时在它后面再加上几个恒等映射层（Identity mapping，也即y=x，输出等于输入），这样就增加了网络的深度，并且起码误差不会增加，也即更深的网络不应该带来训练集上误差的上升。而这里提到的使用恒等映射直接将前一层输出传到后面的思想，便是著名深度残差网络ResNet的灵感来源。</p><h2 id="网络结构"><a href="#网络结构" class="headerlink" title="网络结构"></a>网络结构</h2><p><img src="/2022/08/25/resnet/1.png" alt><br><img src="/2022/08/25/resnet/4.png" alt><br>如图所示维resnetv1的网络结构。网络前几层使用3<em>3卷积之后接maxpooling提取显著特征同时增大感受野。网络分成4个stage并通过skip connections直接将输入信息绕道传到输出，保护信息的完整性，整个网络只需要学习输入、输出差别的那一部分，简化学习目标和难度。<br><img src="/2022/08/25/resnet/3.png" alt><br>resnet有两种残差连接方式，一种是以两个3</em>3的卷积网络串接在一起作为一个残差模块，另外一种是1<em>1、3</em>3、1*1的3个卷积网络串接在一起作为一个残差模块。他们如图所示。</p><h2 id="意义"><a href="#意义" class="headerlink" title="意义"></a>意义</h2><p>这种残差跳跃式的结构，打破了传统的神经网络n-1层的输出只能给n层作为输入的惯例，使某一层的输出可以直接跨过几层作为后面某一层的输入，其意义在于为叠加多层网络而使得整个学习模型的错误率不降反升的难题提供了新的方向。<br>至此，神经网络的层数可以超越之前的约束，达到几十层、上百层甚至千层，为高级语义特征提取和分类提供了可行性。<br><img src="/2022/08/25/resnet/5.png" alt>完整的resnet的网络结构非常壮观。</p><h2 id="不同通道连接"><a href="#不同通道连接" class="headerlink" title="不同通道连接"></a>不同通道连接</h2><p>从图可以看出，怎么有一些“shortcut connections（捷径连接）”是实线，有一些是虚线，有什么区别呢？<br><img src="/2022/08/25/resnet/6.png" alt><br>因为经过“shortcut connections（捷径连接）”后，H(x)=F(x)+x，如果F(x)和x的通道相同，则可直接相加，那么通道不同怎么相加呢。对通道数不同的情况，只需要通过卷积操作改变通道数即可。上图中的实线、虚线就是为了区分这两种情况的：</p><p>实线的Connection部分，表示通道相同，如上图的第一个粉色矩形和第三个粉色矩形，都是3x3x64的特征图，由于通道相同，所以采用计算方式为H(x)=F(x)+x<br>虚线的的Connection部分，表示通道不同，如上图的第一个绿色矩形和第三个绿色矩形，分别是3x3x64和3x3x128的特征图，通道不同，采用的计算方式为H(x)=F(x)+Wx，其中W是卷积操作，用来调整x维度的。</p><h2 id="resnet-v2"><a href="#resnet-v2" class="headerlink" title="resnet v2"></a>resnet v2</h2><p>ResNet V2 和 ResNet V1 的主要区别在于，作者通过研究 ResNet 残差学习单元的传播公式，发现前馈和反馈信号可以直接传输，因此“shortcut connection”（捷径连接）的非线性激活函数（如ReLU）替换为 Identity Mappings。同时，ResNet V2 在每一层中都使用了 Batch Normalization。这样处理后，新的残差学习单元比以前更容易训练且泛化性更强。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>SEnet</title>
+      <link href="/2022/08/22/SEnet/"/>
+      <url>/2022/08/22/SEnet/</url>
+      
+        <content type="html"><![CDATA[<p>date: 2022-08-22 20:02:38</p><h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>卷积神经网络的核心构件是卷积算子，它可以通过融合每一层局部接受域内的空间信息和信道信息来构建信息特征。<br>先前的研究主要是加强网络对空间尺度内的表示能力。而SEnet更关注通道间的关系。设计了一种SE块<br>这种SE块既可以堆叠成一个网络用来完成相关任务，也可以在现有模型中加入这种通道注意力的机制用来提高原始模型的表示能力</p><h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>首先输入神经网络的图或是特征图的尺度如下<img src="/2022/08/22/SEnet/3.png" alt><br>先前的神经网络的工作都是在空间（HW）尺度内改进网络的效果。如何在空间尺度内改进网络效果呢？<br>首先回顾一下卷积<br>放一张卷积与全连接的对比图<br><img src="/2022/08/22/SEnet/4.png" alt><br><img src="/2022/08/22/SEnet/5.png" alt><br>对比发现，卷积相较于全连接。首先就是可以直观的表示特征。与卷积核相似度高的区域得分会更高。<br>卷积的参数更少，这可以增加网络的鲁棒性。<br>但是卷积相较于全连接的缺点也很明显。卷积的提取出的特征并不是全局的特征，受卷积的感受野的限制<br>那么如何在空间尺度上提升网络的性能呢？<br>很显而易见的是增加网络的感受野，使得提取出的特征尽可能是全局特征。<br>增加感受野的方法如下：下采样（池化），增大卷积核，加深网络<br>VGG使用减小卷积核的方法在增大感受野的同时减少参数<br><img src="/2022/08/22/SEnet/6.png" alt><br>为了解决在加深网络的同时带来的问题，resnet引入了残差模块，highwaynet与之类似。<br><img src="/2022/08/22/SEnet/7.png" alt></p><h2 id="相关工作"><a href="#相关工作" class="headerlink" title="相关工作"></a>相关工作</h2><p>之前的研究表明加深网络的深度可以增强网络的表示能力。为了加深网络出现了一些方法。比如vgg使用小卷积核增加网络深度，使用Batch Normalization (BN)来加快网络的学习速度。<br>ResNeT加入残差块，HighNet使用门控机制来调节一些层的信息会走捷径（一些信息不经过卷积层直接来到下一层）。分组卷积增加卷积次数增加卷积深度。</p><h2 id="注意力门控机制"><a href="#注意力门控机制" class="headerlink" title="注意力门控机制"></a>注意力门控机制</h2><p>注意力机制可以被解释为将一些可计算资源不按照平均分配而是将最多的计算资源分配到信息最丰富的部分中的一种手段。文中的SE块就是一种注意力门控机制</p><h2 id="SQUEEZE-AND-EXCITATION-BLOCKS"><a href="#SQUEEZE-AND-EXCITATION-BLOCKS" class="headerlink" title="SQUEEZE-AND-EXCITATION BLOCKS"></a>SQUEEZE-AND-EXCITATION BLOCKS</h2><p><img src="/2022/08/22/SEnet/1.png" alt><br>如图所示，SQUEEZE-AND-EXCITATION BLOCKS是在卷积操作之后，先压缩成一个C维的向量，再对这个向量进行激活得到一个权重向量。并将这个这个权重作为对输出结果C的权重。得到校准后的结果可以直接作为下一层的输入。</p><h3 id="SQUEEZE"><a href="#SQUEEZE" class="headerlink" title="SQUEEZE"></a>SQUEEZE</h3><p>Squeeze部分就是对每个通道进行全局聚合。SEnet使用全局平均池化，也可以使用其他更复杂的聚合方式，但是使用这种简单的聚合方式已经可以提升网络的性能。</p><h2 id="激活"><a href="#激活" class="headerlink" title="激活"></a>激活</h2><p>SE块中的激活函数需要满足两个条件：<br>1.这个激活需要是非线性的，2，这个激活应该是非互斥的（即应该允许出现多个通道可以被高响应的而不是只有一个通道被高响应）</p><h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p><img src="/2022/08/22/SEnet/8.png" alt><br><img src="/2022/08/22/SEnet/9.png" alt><br>se块在VGG和RESNET中的应用。</p><h2 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h2><h3 id="减速比"><a href="#减速比" class="headerlink" title="减速比"></a>减速比</h3><p><img src="/2022/08/22/SEnet/10.png" alt><br>比较效果时观察准确率的同时还应注重参数量和计算速度。综合两个结果</p><h3 id="聚合方式"><a href="#聚合方式" class="headerlink" title="聚合方式"></a>聚合方式</h3><p><img src="/2022/08/22/SEnet/11.png" alt><br>最大池化可以提取特征纹理， 最大池化提取边缘等“最重要”的特征</p><p>平均池化可以保留背景信息，平均池化提取的特征更加smoothly</p><p>ResNet在输入全连接层之前利用Kernel Size=7的AvgPooling来降维。反之为了减少无用信息的影响时用maxpool。网络浅层用maxpooling来进行降维。</p><p>但是全局平均池化的窗口太大了尤其浅层使用GMP其中一个像素点对应的感受野非常小。不能捕捉到全局信息。</p><p>CAM提到，在分类问题中gmp和gap并看不出孰优孰劣。但是要让卷积神经网络的对其分类结果给出一个合理解释，必须要充分利用好最后一个卷积层。GAP相较于GMP来说更充分的利用了空间信息</p><p>文章中处于对全局信息的考虑使用了GAP</p><h3 id="使用位置"><a href="#使用位置" class="headerlink" title="使用位置"></a>使用位置</h3><p><img src="/2022/08/22/SEnet/12.png" alt><br>resnet的四个阶段中使用，效果可以叠加。因为卷积神经网络深层浅层具有不同的效果。浅层神经网络提取类无关的特征。深层卷积网络作用是提取抽象的类相关的特征。因此四个阶段中的SE模块也有不同的作用</p><h3 id="激活函数"><a href="#激活函数" class="headerlink" title="激活函数"></a>激活函数</h3><p>为什么Sigmoid效果最好，原文中提到：需要的激活函数应具备两个性质：<br>1.需要非线性<br>2.需要同时确保多个通道同时具有较高的权重，而不是只有一个通道获得高权重。<br>对比两个激活函数sigmoid函数将值限定在0-1之间，不会出现特别大的值分走过多的权重。<br><img src="/2022/08/22/SEnet/13.png" alt><br><img src="/2022/08/22/SEnet/14.png" alt><br><img src="/2022/08/22/SEnet/15.png" alt></p><h2 id="SE块的插入位置"><a href="#SE块的插入位置" class="headerlink" title="SE块的插入位置"></a>SE块的插入位置</h2><p><img src="/2022/08/22/SEnet/16.png" alt><br><img src="/2022/08/22/SEnet/17.png" alt><br>由结果看出，SE块需要插入在分支聚合前</p><h2 id="SE-3-3"><a href="#SE-3-3" class="headerlink" title="SE_3*3"></a>SE_3*3</h2><p><img src="/2022/08/22/SEnet/18.png" alt><br><img src="/2022/08/22/SEnet/19.png" alt><br>目的减少参数，将SE块放在中间通道少的地方，准确率略微下降，但是参数量显著减少。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>VGG</title>
       <link href="/2022/08/20/VGG/"/>
       <url>/2022/08/20/VGG/</url>
