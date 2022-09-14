@@ -5,7 +5,7 @@
 
   
   <title>
-    densenet |
+    Shufflenet |
     学习笔记
   </title>
   
@@ -13,13 +13,13 @@
 
   <meta name="description" content="">
   <meta name="author" content="张若淇">
-  <meta property="og:title" content="densenet" />
+  <meta property="og:title" content="Shufflenet" />
   <meta property="og:description" content="" />
   <meta property='og:site_name' content='学习笔记' />
   <meta property="og:image" content="http://example.com/img/default.jpg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:description" content="" />
-  <meta name="twitter:title" content="densenet" />
+  <meta name="twitter:title" content="Shufflenet" />
 
   <meta name="twitter:image" content="http://example.com/img/default.jpg" />
 
@@ -77,17 +77,17 @@
     <div class="row">
         <div class="col-sm-9 px-md-5">
             <h2 class="blog-post-title">
-                densenet
+                Shufflenet
             </h2>
             <p class="meta">
                 <i class="far fa-clock"></i>
-                2022-08-25 
+                2022-09-14 
             </p>
             <!-- Content -->
-            <p>date: 2022-08-25 09:19:53</p>
-<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在深度学习网络中，随着网络深度的加深，梯度消失问题会愈加明显，目前很多论文都针对这个问题提出了解决方案，比如ResNet，Highway Networks，Stochastic depth，FractalNets等，尽管这些算法的网络结构有差别，但是核心都在于：create short paths from early layers to later layers。那么作者是怎么做呢？延续这个思路，那就是在保证网络中层与层之间最大程度的信息传输的前提下，直接将所有层连接起来！<br>dense block的结构图如下。在传统的卷积神经网络中，如果你有L层，那么就会有L个连接，但是在DenseNet中，会有L(L+1)/2个连接。简单讲，就是每一层的输入来自前面所有层的输出。<br><img src="/2022/08/25/densenet/1.jpg" alt></p>
-<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p>DenseNet的结构图，在这个结构图中包含了3个dense block。作者将DenseNet分成多个dense block，原因是希望各个dense block内的feature map的size统一，这样在做concatenation就不会有size的问题。<br><img src="/2022/08/25/densenet/2.jpg" alt><br>DenseNet和ResNet的一个明显区别是，ResNet是求和，而DenseNet是做一个拼接，每一层网络的输入包括前面所有层网络的输出。<br>整个网络的结构图。这个表中的k=32，k=48中的k是growth rate，表示每个dense block中每层输出的feature map个数。为了避免网络变得很宽，作者都是采用较小的k，比如32这样，作者的实验也表明小的k可以有更好的效果。根据dense block的设计，后面几层可以得到前面所有层的输入，因此concat后的输入channel还是比较大的。另外这里每个dense block的3<em>3卷积前面都包含了一个1</em>1的卷积操作，就是所谓的bottleneck layer，目的是减少输入的feature map数量，既能降维减少计算量，又能融合各个通道的特征，何乐而不为。另外作者为了进一步压缩参数，在每两个dense block之间又增加了1<em>1的卷积操作。因此在后面的实验对比中，如果你看到DenseNet-C这个网络，表示增加了这个Translation layer，该层的1</em>1卷积的输出channel默认是输入channel到一半。如果你看到DenseNet-BC这个网络，表示既有bottleneck layer，又有Translation layer。<br><img src="/2022/08/25/densenet/3.jpg" alt></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>DenseNet核心思想在于建立了不同层之间的连接关系，充分利用了feature，进一步减轻了梯度消失问题，加深网络不是问题，而且训练效果非常好。另外，利用bottleneck layer，Translation layer以及较小的growth rate使得网络变窄，参数减少，有效抑制了过拟合，同时计算量也减少了。DenseNet优点很多，而且在和ResNet的对比中优势还是非常明显的。</p>
+            <p>论文：ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices<br>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.01083">https://arxiv.org/abs/1707.01083</a></p>
+<h2 id="算法详解："><a href="#算法详解：" class="headerlink" title="算法详解："></a>算法详解：</h2><p>ShuffleNet是一篇用于降低网络参数量的论文。ShuffleNet使用分组卷积的操作方式降低网络参数。分组卷积最早在Alexnet中使用。后续依次被resnet和<br>MobileNet借鉴。MobileNet使用了深度可分离卷积的方法减少了网络参数。具体方法是使用w<em>h</em>1的depthwise卷积和1<em>1</em>C的pointwise卷积。<br>其中depthwise卷积可以看作是分组数等于通道数的分组卷积。通过分组的方式减少网络的参数量。ShuffleNet在MobileNet的基础上。对point wise卷积也采用了分组卷积的方式<br>来减少point wise卷积的参数量。但是这样做会产生边界效应。即在最终的输出结果中有某些通道没有被计算。为了解决这个问题ShuffleNet使用了channel shuffle<br>的操作。如图所示使用通道重排的方式使得输出的特征图使用所有的通道来计算。<br><img src="/2022/09/14/Shufflenet/1.jpg" alt></p>
+<h2 id="特征提取和下采样"><a href="#特征提取和下采样" class="headerlink" title="特征提取和下采样"></a>特征提取和下采样</h2><p><img src="/2022/09/14/Shufflenet/2.jpg" alt><br>Figure2（b）中的第一个1<em>1卷积是GConv，表示group convolution。Figure2（a）是ResNet中的bottleneck unit，不过将原来的3</em>3 Conv改成3<em>3 DWConv，作者的ShuffleNet主要也是在这基础上做改动。首先用带group的1</em>1卷积代替原来的1<em>1卷积，同时跟一个channel shuffle操作，这个前面也介绍过了。然后是3</em>3 DWConv表示depthwise separable convolution。depthwise separable convolution可以参考MobileNet，下面贴出depthwise separable convolution的示意图。Figure2（c）添加了一个Average pooling和设置了stride=2，另外原来Resnet最后是一个Add操作，也就是元素值相加，而在（c）中是采用concat的操作，也就是按channel合并，类似googleNet的Inception操作。</p>
+<h2 id="与MobileNet相比的改进："><a href="#与MobileNet相比的改进：" class="headerlink" title="与MobileNet相比的改进："></a>与MobileNet相比的改进：</h2><p>作者认为mobilenet中的1*1的point wise卷积还是可以降低参数的，但是使用分组的方式降低参数会导致只有一部分通道参与计算，因此作者使用通道重排的方式改进这个缺点。</p>
 
             <br />
             <p class="meta">
@@ -152,10 +152,10 @@
 </script>
 
 
-<a class="float-left gradient btn paginationbtn" href="/2022/08/25/resnet/"><i class="fas fa-chevron-left"></i></a>
+<a class="float-left gradient btn paginationbtn" href="/2022/08/25/densenet/"><i class="fas fa-chevron-left"></i></a>
 
 
-<a class="float-right gradient btn paginationbtn" href="/2022/09/14/Shufflenet/"><i class="fas fa-chevron-right"></i></a>
+<a class="float-right gradient btn paginationbtn" href="/2022/09/14/efficientnet/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->

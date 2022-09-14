@@ -5,7 +5,7 @@
 
   
   <title>
-    densenet |
+    R-CNN FastRCNN FasterRCNN |
     学习笔记
   </title>
   
@@ -13,13 +13,13 @@
 
   <meta name="description" content="">
   <meta name="author" content="张若淇">
-  <meta property="og:title" content="densenet" />
+  <meta property="og:title" content="R-CNN FastRCNN FasterRCNN" />
   <meta property="og:description" content="" />
   <meta property='og:site_name' content='学习笔记' />
   <meta property="og:image" content="http://example.com/img/default.jpg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:description" content="" />
-  <meta name="twitter:title" content="densenet" />
+  <meta name="twitter:title" content="R-CNN FastRCNN FasterRCNN" />
 
   <meta name="twitter:image" content="http://example.com/img/default.jpg" />
 
@@ -77,17 +77,27 @@
     <div class="row">
         <div class="col-sm-9 px-md-5">
             <h2 class="blog-post-title">
-                densenet
+                R-CNN FastRCNN FasterRCNN
             </h2>
             <p class="meta">
                 <i class="far fa-clock"></i>
-                2022-08-25 
+                2022-09-14 
             </p>
             <!-- Content -->
-            <p>date: 2022-08-25 09:19:53</p>
-<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>在深度学习网络中，随着网络深度的加深，梯度消失问题会愈加明显，目前很多论文都针对这个问题提出了解决方案，比如ResNet，Highway Networks，Stochastic depth，FractalNets等，尽管这些算法的网络结构有差别，但是核心都在于：create short paths from early layers to later layers。那么作者是怎么做呢？延续这个思路，那就是在保证网络中层与层之间最大程度的信息传输的前提下，直接将所有层连接起来！<br>dense block的结构图如下。在传统的卷积神经网络中，如果你有L层，那么就会有L个连接，但是在DenseNet中，会有L(L+1)/2个连接。简单讲，就是每一层的输入来自前面所有层的输出。<br><img src="/2022/08/25/densenet/1.jpg" alt></p>
-<h2 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a>结构图</h2><p>DenseNet的结构图，在这个结构图中包含了3个dense block。作者将DenseNet分成多个dense block，原因是希望各个dense block内的feature map的size统一，这样在做concatenation就不会有size的问题。<br><img src="/2022/08/25/densenet/2.jpg" alt><br>DenseNet和ResNet的一个明显区别是，ResNet是求和，而DenseNet是做一个拼接，每一层网络的输入包括前面所有层网络的输出。<br>整个网络的结构图。这个表中的k=32，k=48中的k是growth rate，表示每个dense block中每层输出的feature map个数。为了避免网络变得很宽，作者都是采用较小的k，比如32这样，作者的实验也表明小的k可以有更好的效果。根据dense block的设计，后面几层可以得到前面所有层的输入，因此concat后的输入channel还是比较大的。另外这里每个dense block的3<em>3卷积前面都包含了一个1</em>1的卷积操作，就是所谓的bottleneck layer，目的是减少输入的feature map数量，既能降维减少计算量，又能融合各个通道的特征，何乐而不为。另外作者为了进一步压缩参数，在每两个dense block之间又增加了1<em>1的卷积操作。因此在后面的实验对比中，如果你看到DenseNet-C这个网络，表示增加了这个Translation layer，该层的1</em>1卷积的输出channel默认是输入channel到一半。如果你看到DenseNet-BC这个网络，表示既有bottleneck layer，又有Translation layer。<br><img src="/2022/08/25/densenet/3.jpg" alt></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>DenseNet核心思想在于建立了不同层之间的连接关系，充分利用了feature，进一步减轻了梯度消失问题，加深网络不是问题，而且训练效果非常好。另外，利用bottleneck layer，Translation layer以及较小的growth rate使得网络变窄，参数减少，有效抑制了过拟合，同时计算量也减少了。DenseNet优点很多，而且在和ResNet的对比中优势还是非常明显的。</p>
+            <h2 id="IOU-Intersection-over-Union"><a href="#IOU-Intersection-over-Union" class="headerlink" title="IOU(Intersection over Union)"></a>IOU(Intersection over Union)</h2><p> IoU是一种测量在特定数据集中检测相应物体准确度的一个标准。IoU是一个简单的测量标准，只要是在输出中得出一个预测范围(bounding boxex)的任务都可以用IoU来进行测量。为了可以使IoU用于测量任意大小形状的物体检测，我们需要：</p>
+<p>ground-truth bounding boxes（人为在训练集图像中标出要检测物体的大概范围）<br>我们的算法得出的结果范围。<br>       也就是说，这个标准用于测量真实和预测之间的相关度，相关度越高，该值越高。如下图所示。绿色标线是人为标记的正确结果（ground-truth），红色标线是算法预测的结果（predicted）。</p>
+<h2 id="RCNN"><a href="#RCNN" class="headerlink" title="RCNN"></a>RCNN</h2><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>RCNN算法分为4个步骤</p>
+<p>一张图像生成1K~2K个候选区域<br>对每个候选区域，使用深度网络提取特征<br>特征送入每一类的SVM 分类器，判别是否属于该类<br>使用回归器精细修正候选框位置</p>
+<h3 id="候选区域生成"><a href="#候选区域生成" class="headerlink" title="候选区域生成"></a>候选区域生成</h3><p>使用了Selective Search1方法从一张图像生成约2000-3000个候选区域。基本思路如下：</p>
+<p>使用一种过分割手段，将图像分割成小区域<br>查看现有小区域，合并可能性最高的两个区域。重复直到整张图像合并成一个区域位置<br>输出所有曾经存在过的区域，所谓候选区域<br>候选区域生成和后续步骤相对独立，实际可以使用任意算法进行。</p>
+<h4 id="候选区域合并"><a href="#候选区域合并" class="headerlink" title="候选区域合并"></a>候选区域合并</h4><p>优先合并以下四种区域：</p>
+<p>颜色（颜色直方图）相近的<br>纹理（梯度直方图）相近的<br>合并后总面积小的<br>合并后，总面积在其BBOX中所占比例大的<br>第三条，保证合并操作的尺度较为均匀，避免一个大区域陆续“吃掉”其他小区域。</p>
+<h4 id="多样化与后处理"><a href="#多样化与后处理" class="headerlink" title="多样化与后处理"></a>多样化与后处理</h4><p>为尽可能不遗漏候选区域，上述操作在多个颜色空间中同时进行（RGB,HSV,Lab等）。在一个颜色空间中，使用上述四条规则的不同组合进行合并。所有颜色空间与所有规则的全部结果，在去除重复后，都作为候选区域输出。</p>
+<h2 id="FastRCNN"><a href="#FastRCNN" class="headerlink" title="FastRCNN"></a>FastRCNN</h2><p>将候选区域生成这一步放到特征图之后，这样可以不对所有的候选区域都单独做一次前向传播</p>
+<h2 id="FasterRCNN"><a href="#FasterRCNN" class="headerlink" title="FasterRCNN"></a>FasterRCNN</h2><p>核心思想是使用CNN卷积神经网络直接产生Region Proposal，使用的方法本质上就是滑动窗口（只需在最后的卷积层上滑动一遍），因为anchor机制和边框回归可以得到多尺度多长宽比的Region Proposal。</p>
+<p>RPN网络也是全卷积网络（FCN，fully-convolutional network），可以针对生成检测建议框的任务端到端地训练，能够同时预测出object的边界和分数。只是在CNN上额外增加了2个卷积层（全卷积层cls和reg）。</p>
+<p>①将每个特征图的位置编码成一个特征向量（256dfor ZF and 512d for VGG）。</p>
+<p>②对每一个位置输出一个objectness score和regressedbounds for k个region proposal，即在每个卷积映射位置输出这个位置上多种尺度（3种）和长宽比（3种）的k个（3*3=9）区域建议的物体得分和回归边界。</p>
 
             <br />
             <p class="meta">
@@ -152,10 +162,8 @@
 </script>
 
 
-<a class="float-left gradient btn paginationbtn" href="/2022/08/25/resnet/"><i class="fas fa-chevron-left"></i></a>
+<a class="float-left gradient btn paginationbtn" href="/2022/09/14/efficientnet/"><i class="fas fa-chevron-left"></i></a>
 
-
-<a class="float-right gradient btn paginationbtn" href="/2022/09/14/Shufflenet/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->

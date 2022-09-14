@@ -4,6 +4,45 @@
   
     
     <entry>
+      <title>R-CNN FastRCNN FasterRCNN</title>
+      <link href="/2022/09/14/R-CNN-FastRCNN-FasterRCNN/"/>
+      <url>/2022/09/14/R-CNN-FastRCNN-FasterRCNN/</url>
+      
+        <content type="html"><![CDATA[<h2 id="IOU-Intersection-over-Union"><a href="#IOU-Intersection-over-Union" class="headerlink" title="IOU(Intersection over Union)"></a>IOU(Intersection over Union)</h2><p> IoU是一种测量在特定数据集中检测相应物体准确度的一个标准。IoU是一个简单的测量标准，只要是在输出中得出一个预测范围(bounding boxex)的任务都可以用IoU来进行测量。为了可以使IoU用于测量任意大小形状的物体检测，我们需要：</p><p>ground-truth bounding boxes（人为在训练集图像中标出要检测物体的大概范围）<br>我们的算法得出的结果范围。<br>       也就是说，这个标准用于测量真实和预测之间的相关度，相关度越高，该值越高。如下图所示。绿色标线是人为标记的正确结果（ground-truth），红色标线是算法预测的结果（predicted）。</p><h2 id="RCNN"><a href="#RCNN" class="headerlink" title="RCNN"></a>RCNN</h2><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>RCNN算法分为4个步骤</p><p>一张图像生成1K~2K个候选区域<br>对每个候选区域，使用深度网络提取特征<br>特征送入每一类的SVM 分类器，判别是否属于该类<br>使用回归器精细修正候选框位置</p><h3 id="候选区域生成"><a href="#候选区域生成" class="headerlink" title="候选区域生成"></a>候选区域生成</h3><p>使用了Selective Search1方法从一张图像生成约2000-3000个候选区域。基本思路如下：</p><p>使用一种过分割手段，将图像分割成小区域<br>查看现有小区域，合并可能性最高的两个区域。重复直到整张图像合并成一个区域位置<br>输出所有曾经存在过的区域，所谓候选区域<br>候选区域生成和后续步骤相对独立，实际可以使用任意算法进行。</p><h4 id="候选区域合并"><a href="#候选区域合并" class="headerlink" title="候选区域合并"></a>候选区域合并</h4><p>优先合并以下四种区域：</p><p>颜色（颜色直方图）相近的<br>纹理（梯度直方图）相近的<br>合并后总面积小的<br>合并后，总面积在其BBOX中所占比例大的<br>第三条，保证合并操作的尺度较为均匀，避免一个大区域陆续“吃掉”其他小区域。</p><h4 id="多样化与后处理"><a href="#多样化与后处理" class="headerlink" title="多样化与后处理"></a>多样化与后处理</h4><p>为尽可能不遗漏候选区域，上述操作在多个颜色空间中同时进行（RGB,HSV,Lab等）。在一个颜色空间中，使用上述四条规则的不同组合进行合并。所有颜色空间与所有规则的全部结果，在去除重复后，都作为候选区域输出。</p><h2 id="FastRCNN"><a href="#FastRCNN" class="headerlink" title="FastRCNN"></a>FastRCNN</h2><p>将候选区域生成这一步放到特征图之后，这样可以不对所有的候选区域都单独做一次前向传播</p><h2 id="FasterRCNN"><a href="#FasterRCNN" class="headerlink" title="FasterRCNN"></a>FasterRCNN</h2><p>核心思想是使用CNN卷积神经网络直接产生Region Proposal，使用的方法本质上就是滑动窗口（只需在最后的卷积层上滑动一遍），因为anchor机制和边框回归可以得到多尺度多长宽比的Region Proposal。</p><p>RPN网络也是全卷积网络（FCN，fully-convolutional network），可以针对生成检测建议框的任务端到端地训练，能够同时预测出object的边界和分数。只是在CNN上额外增加了2个卷积层（全卷积层cls和reg）。</p><p>①将每个特征图的位置编码成一个特征向量（256dfor ZF and 512d for VGG）。</p><p>②对每一个位置输出一个objectness score和regressedbounds for k个region proposal，即在每个卷积映射位置输出这个位置上多种尺度（3种）和长宽比（3种）的k个（3*3=9）区域建议的物体得分和回归边界。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>efficientnet</title>
+      <link href="/2022/09/14/efficientnet/"/>
+      <url>/2022/09/14/efficientnet/</url>
+      
+        <content type="html"><![CDATA[<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>对网络的扩展一般分为增加深度与增加宽度，efficientnet通过实验从depth, width, resolution 这三个维度去缩放模型。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Shufflenet</title>
+      <link href="/2022/09/14/Shufflenet/"/>
+      <url>/2022/09/14/Shufflenet/</url>
+      
+        <content type="html"><![CDATA[<p>论文：ShuffleNet: An Extremely Efficient Convolutional Neural Network for Mobile Devices<br>论文链接：<a href="https://arxiv.org/abs/1707.01083">https://arxiv.org/abs/1707.01083</a></p><h2 id="算法详解："><a href="#算法详解：" class="headerlink" title="算法详解："></a>算法详解：</h2><p>ShuffleNet是一篇用于降低网络参数量的论文。ShuffleNet使用分组卷积的操作方式降低网络参数。分组卷积最早在Alexnet中使用。后续依次被resnet和<br>MobileNet借鉴。MobileNet使用了深度可分离卷积的方法减少了网络参数。具体方法是使用w<em>h</em>1的depthwise卷积和1<em>1</em>C的pointwise卷积。<br>其中depthwise卷积可以看作是分组数等于通道数的分组卷积。通过分组的方式减少网络的参数量。ShuffleNet在MobileNet的基础上。对point wise卷积也采用了分组卷积的方式<br>来减少point wise卷积的参数量。但是这样做会产生边界效应。即在最终的输出结果中有某些通道没有被计算。为了解决这个问题ShuffleNet使用了channel shuffle<br>的操作。如图所示使用通道重排的方式使得输出的特征图使用所有的通道来计算。<br><img src="/2022/09/14/Shufflenet/1.jpg" alt></p><h2 id="特征提取和下采样"><a href="#特征提取和下采样" class="headerlink" title="特征提取和下采样"></a>特征提取和下采样</h2><p><img src="/2022/09/14/Shufflenet/2.jpg" alt><br>Figure2（b）中的第一个1<em>1卷积是GConv，表示group convolution。Figure2（a）是ResNet中的bottleneck unit，不过将原来的3</em>3 Conv改成3<em>3 DWConv，作者的ShuffleNet主要也是在这基础上做改动。首先用带group的1</em>1卷积代替原来的1<em>1卷积，同时跟一个channel shuffle操作，这个前面也介绍过了。然后是3</em>3 DWConv表示depthwise separable convolution。depthwise separable convolution可以参考MobileNet，下面贴出depthwise separable convolution的示意图。Figure2（c）添加了一个Average pooling和设置了stride=2，另外原来Resnet最后是一个Add操作，也就是元素值相加，而在（c）中是采用concat的操作，也就是按channel合并，类似googleNet的Inception操作。</p><h2 id="与MobileNet相比的改进："><a href="#与MobileNet相比的改进：" class="headerlink" title="与MobileNet相比的改进："></a>与MobileNet相比的改进：</h2><p>作者认为mobilenet中的1*1的point wise卷积还是可以降低参数的，但是使用分组的方式降低参数会导致只有一部分通道参与计算，因此作者使用通道重排的方式改进这个缺点。</p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>densenet</title>
       <link href="/2022/08/25/densenet/"/>
       <url>/2022/08/25/densenet/</url>
