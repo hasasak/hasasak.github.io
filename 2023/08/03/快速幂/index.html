@@ -5,7 +5,7 @@
 
   
   <title>
-    最长不重复子串 |
+    快速幂 |
     学习笔记
   </title>
   
@@ -13,13 +13,13 @@
 
   <meta name="description" content="">
   <meta name="author" content="张若淇">
-  <meta property="og:title" content="最长不重复子串" />
+  <meta property="og:title" content="快速幂" />
   <meta property="og:description" content="" />
   <meta property='og:site_name' content='学习笔记' />
   <meta property="og:image" content="http://example.com/img/default.jpg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:description" content="" />
-  <meta name="twitter:title" content="最长不重复子串" />
+  <meta name="twitter:title" content="快速幂" />
 
   <meta name="twitter:image" content="http://example.com/img/default.jpg" />
 
@@ -77,15 +77,25 @@
     <div class="row">
         <div class="col-sm-9 px-md-5">
             <h2 class="blog-post-title">
-                最长不重复子串
+                快速幂
             </h2>
             <p class="meta">
                 <i class="far fa-clock"></i>
                 2023-08-03 
             </p>
             <!-- Content -->
-            <p>date: 2022-08-22 20:02:38</p>
-<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h1 id="最长不重复子串"><a href="#最长不重复子串" class="headerlink" title="最长不重复子串"></a>最长不重复子串</h1><h2 id="图示"><a href="#图示" class="headerlink" title="图示"></a>图示</h2><p><img src="/2023/08/03/%E6%9C%80%E9%95%BF%E4%B8%8D%E9%87%8D%E5%A4%8D%E5%AD%90%E4%B8%B2/最长不重复子串.png" alt="图示"><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    int lengthOfLongestSubstring(string s) &#123;</span><br><span class="line">        int a=0;</span><br><span class="line">        int b=0;</span><br><span class="line">        int len = 1;</span><br><span class="line">        if (s.size()==0)&#123;//s为零时；</span><br><span class="line">            return 0;</span><br><span class="line">        &#125;</span><br><span class="line">        while(b&lt;s.size()-1)&#123;</span><br><span class="line">            b = b+1;</span><br><span class="line">            for (int i=a;i&lt;b;i++)&#123;</span><br><span class="line">                if (s[i]==s[b])&#123;</span><br><span class="line">                    a = i+1;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            if (b-a+1&gt;len)&#123;</span><br><span class="line">            len = b-a+1;</span><br><span class="line">        &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        return len;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+            <h1 id="递归线性问题的快速幂计算"><a href="#递归线性问题的快速幂计算" class="headerlink" title="递归线性问题的快速幂计算"></a>递归线性问题的快速幂计算</h1><h2 id="示例：斐波那契数列"><a href="#示例：斐波那契数列" class="headerlink" title="示例：斐波那契数列"></a>示例：斐波那契数列</h2><p>f(x)=f(x-1)+f(x-2);f(0)=1;f(1)=2;</p>
+<h3 id="递归计算斐波那契数列"><a href="#递归计算斐波那契数列" class="headerlink" title="递归计算斐波那契数列"></a>递归计算斐波那契数列</h3><p>矩阵形式如下</p>
+<p><img src="/2023/08/03/%E5%BF%AB%E9%80%9F%E5%B9%82/快速幂.png" alt="快速幂"></p>
+<p>因此</p>
+<p><img src="/2023/08/03/%E5%BF%AB%E9%80%9F%E5%B9%82/快速幂1.png" alt="快速幂1"></p>
+<h3 id="快速幂"><a href="#快速幂" class="headerlink" title="快速幂"></a>快速幂</h3><p>快速幂计算原理<br>暂存幂运算的中间值；<br>示例计算2的15次方</p>
+<p><img src="/2023/08/03/%E5%BF%AB%E9%80%9F%E5%B9%82/快速幂2.png" alt="快速幂1"></p>
+<p>为什么会快<br>传统计算过程为连乘15-1次</p>
+<p>快速幂计算流程：1，保存2的一次方</p>
+<p>2.将2的一次方乘2的一次方得到2的二次方，并与之前的计算结果相乘</p>
+<p>3.同理计算次数为2+2+2 = 6次</p>
+<p>矩阵快速幂同理</p>
 
             <br />
             <p class="meta">
@@ -150,10 +160,10 @@
 </script>
 
 
-<a class="float-left gradient btn paginationbtn" href="/2023/08/03/反转链表/"><i class="fas fa-chevron-left"></i></a>
+<a class="float-left gradient btn paginationbtn" href="/2023/08/03/滑窗不重复子串/"><i class="fas fa-chevron-left"></i></a>
 
 
-<a class="float-right gradient btn paginationbtn" href="/2023/08/03/线性问题的快速幂计算/"><i class="fas fa-chevron-right"></i></a>
+<a class="float-right gradient btn paginationbtn" href="/2023/08/03/两数相加/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->

@@ -84,8 +84,7 @@
                 2023-08-03 
             </p>
             <!-- Content -->
-            <p>date: 2022-08-22 20:02:38</p>
-<h2 id="tags"><a href="#tags" class="headerlink" title="tags:"></a>tags:</h2><h1 id="反转链表"><a href="#反转链表" class="headerlink" title="反转链表"></a>反转链表</h1><p>基础题反转链表</p>
+            <h1 id="反转链表"><a href="#反转链表" class="headerlink" title="反转链表"></a>反转链表</h1><p>基础题反转链表</p>
 <h2 id="迭代"><a href="#迭代" class="headerlink" title="迭代"></a>迭代</h2><figure class="highlight plaintext"><figcaption><span>Solution &#123;</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        ListNode *pre = nullptr;</span><br><span class="line">        ListNode *curr = head;</span><br><span class="line">        while (curr)&#123;</span><br><span class="line">            ListNode* next = curr -&gt;next;</span><br><span class="line">            curr -&gt;next = pre;</span><br><span class="line">            pre = curr;</span><br><span class="line">            curr = next;</span><br><span class="line">        &#125;</span><br><span class="line">        return pre;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 <p>思路，反转链表就是将每一个listnode的next变为这个node的pre；所以我们需要记下pre，记下当前node并令node-&gt;next=pre；此外由于链表的下一节点地址会<br>因此丢失，因此我们需要提前保留下next节点的地址</p>
 <h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class Solution &#123;</span><br><span class="line">public:</span><br><span class="line">    ListNode* reverseList(ListNode* head) &#123;</span><br><span class="line">        if(!head||!head -&gt;next)&#123;</span><br><span class="line">            return head;</span><br><span class="line">        &#125;</span><br><span class="line">        ListNode *newhead = reverseList(head-&gt;next);</span><br><span class="line">        head -&gt;next -&gt;next = head;</span><br><span class="line">        head -&gt;next = nullptr;</span><br><span class="line">        return newhead;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
@@ -156,7 +155,7 @@
 <a class="float-left gradient btn paginationbtn" href="/2023/08/03/最长有效括号/"><i class="fas fa-chevron-left"></i></a>
 
 
-<a class="float-right gradient btn paginationbtn" href="/2023/08/03/最长不重复子串/"><i class="fas fa-chevron-right"></i></a>
+<a class="float-right gradient btn paginationbtn" href="/2023/08/03/滑窗不重复子串/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->
