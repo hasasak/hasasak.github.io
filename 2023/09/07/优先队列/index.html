@@ -1,0 +1,384 @@
+<html>
+<!-- Head tag -->
+<head>
+  <meta charset="UTF-8">
+
+  
+  <title>
+    优先队列 |
+    blog
+  </title>
+  
+
+
+  <meta name="description" content="">
+  <meta name="author" content="张若淇">
+  <meta property="og:title" content="优先队列" />
+  <meta property="og:description" content="" />
+  <meta property='og:site_name' content='blog' />
+  <meta property="og:image" content="http://example.com/img/default.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:description" content="" />
+  <meta name="twitter:title" content="优先队列" />
+
+  <meta name="twitter:image" content="http://example.com/img/default.jpg" />
+
+  <script src="https://www.amcharts.com/lib/4/core.js"></script>
+  <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+  <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz"
+    crossorigin="anonymous">
+  
+<link rel="stylesheet" href="/css/style.css">
+
+
+<meta name="generator" content="Hexo 6.2.0"></head>
+
+<body>
+    <!-- Menu -->
+    <nav id="navbar" class="navbar fixed-top navbar-expand-lg navbar-dark page-navbar gradient">
+  <div class="container">
+    <a class="navbar-brand logo" href="http://example.com">
+      blog</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav"
+      aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item item">
+          
+        <li class="nav-item item">
+          <a class="nav-link" href="/">
+            Home</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" href="/archives">
+            🗂️Archives</a>
+        </li>
+        
+        <li class="nav-item item">
+          <a class="nav-link" target="_blank" rel="noopener" href="https://hexo.io/">
+            Hexo</a>
+        </li>
+        
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <main class="page main-page">
+        <div class="container blogPost">
+    <div class="row">
+        <div class="col-sm-9 px-md-5">
+            <h2 class="blog-post-title">
+                优先队列
+            </h2>
+            <p class="meta">
+                <i class="far fa-clock"></i>
+                2023-09-07 
+            </p>
+            <!-- Content -->
+            <h1 id="优先队列"><a href="#优先队列" class="headerlink" title="优先队列"></a>优先队列</h1><p>普通的队列是一种先进先出的数据结构，元素在队列尾追加，而从队列头删除。<br>在优先队列中，元素被赋予优先级。当访问元素时，具有最高优先级的元素最先删除。优先队列具有最高级先出 （first in, largest<br>out）的行为特征。</p>
+<h2 id="优先队列使用"><a href="#优先队列使用" class="headerlink" title="优先队列使用"></a>优先队列使用</h2><p>先要包含头文件#include, 他和queue不同的就在于我们可以自定义其中数据的优先级,让优先级高的排在队列前面,优先出队。</p>
+<pre><code>#include &lt;queue&gt;
+#include &lt;functional&gt; //greater&lt;&gt;
+
+// 定义
+priority_queue&lt;int&gt; pq;
+</code></pre><p>2.默认优先输出大数据</p>
+<pre><code>priority_queue&lt;Type, Container, Functional&gt;
+</code></pre><p>其中, Type 为数据类型. Container 为保存数据的容器. Functional 为元素比较的方式.</p>
+<p>若不写后面两个参数.</p>
+<p>容器 默认使用 vector</p>
+<p>比较方式 默认使用 operator &lt; 即优先队列是大顶堆. 队头元素最大<br>大根堆声明方式：<br>大根堆就是把大的元素放在堆顶的堆。优先队列默认实现的就是大根堆，所以大根堆的声明不需要任何花花肠子，直接按C++STL的声明规则声明即可。</p>
+<pre><code>#include&lt;queue&gt;
+priority_queue&lt;int&gt; q;
+priority_queue&lt;string&gt; q;
+priority_queue&lt;pair&lt;int,int&gt; &gt; q;
+</code></pre><p>C++中的int,string等类型可以直接比较大小</p>
+<p>3.优先输出小数据 即小顶堆</p>
+<pre><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt; &gt; p;
+</code></pre><p>使用 greater<int> . 即改用 operator &gt;<br>小根堆声明方式<br>大根堆是把大的元素放堆顶，小根堆就是把小的元素放到堆顶。</int></p>
+<h2 id="实现小根堆有两种方式："><a href="#实现小根堆有两种方式：" class="headerlink" title="实现小根堆有两种方式："></a>实现小根堆有两种方式：</h2><p>第一种是比较巧妙的，因为优先队列默认实现的是大根堆，所以我们可以把元素取反放进去，因为负数的绝对值越小越大，那么绝对值较小的元素就会被放在前面，我们在取出的时候再取个反，就瞒天过海地用大根堆实现了小根堆。</p>
+<p>less&lt;储存的数据类型&gt; 即使用大顶堆<br>greater&lt;储存的数据类型&gt; 即是用小顶堆</p>
+<p>priority_queue&lt;储存的类型,vector&lt;储存的类型&gt;,顶堆的类型&gt; 容器名</p>
+<p>第二种：</p>
+<p>小根堆有自己的声明方式，我们记住即可（我也说不明白道理）：</p>
+<pre><code>priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt;&gt; pq2; // 最小堆
+
+std::cout &lt;&lt; &quot;start...&quot; &lt;&lt; endl;
+for (int i = 0; i &lt; 10; i++) &#123;
+    int t = rand() % 100;
+    std::cout &lt;&lt; t &lt;&lt; ends;
+    pq2.push(t);
+&#125;
+std::cout &lt;&lt; endl;
+
+while (!pq2.empty())
+&#123;
+    cout &lt;&lt; pq2.top() &lt;&lt; ends;
+    pq2.pop();
+&#125;
+cout &lt;&lt; endl;
+</code></pre><h2 id="依靠重载-lt-符号来自定义优先级"><a href="#依靠重载-lt-符号来自定义优先级" class="headerlink" title="依靠重载&lt;符号来自定义优先级"></a>依靠重载&lt;符号来自定义优先级</h2><pre><code>// 定义比较函数
+// 后面一个表示栈顶元素? 所以这个是 &quot;最小堆&quot;
+bool myCom(int a, int b) &#123;
+    return a % 10 &gt; b % 10;
+&#125;
+
+// 使用
+priority_queue&lt;int, vector&lt;int&gt;, function&lt;bool(int,int)&gt;&gt; pq3(myCom); 
+
+std::cout &lt;&lt; &quot;start...&quot; &lt;&lt; endl;
+for (int i = 0; i &lt; 10; i++) &#123;
+    int t = rand() % 100;
+    std::cout &lt;&lt; t &lt;&lt; ends;
+    pq3.push(t);
+&#125;
+
+std::cout &lt;&lt; endl;
+
+while (!pq3.empty())
+&#123;
+    cout &lt;&lt; pq3.top() &lt;&lt; ends;
+    pq3.pop();
+&#125;
+cout &lt;&lt; endl;
+</code></pre><h2 id="基本类型优先队列例子"><a href="#基本类型优先队列例子" class="headerlink" title="基本类型优先队列例子"></a>基本类型优先队列例子</h2><pre><code>#include&lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+int main() 
+&#123;
+//对于基础类型 默认是大顶堆
+priority_queue&lt;int&gt; a; 
+//等同于 priority_queue&lt;int, vector&lt;int&gt;, less&lt;int&gt; &gt; a;
+
+//   这里一定要有空格，不然成了右移运算符↓↓
+priority_queue&lt;int, vector&lt;int&gt;, greater&lt;int&gt; &gt; c; //这样就是小顶堆
+priority_queue&lt;string&gt; b;
+
+for (int i = 0; i &lt; 5; i++) 
+&#123;
+    a.push(i);
+    c.push(i);
+&#125;
+while (!a.empty()) 
+&#123;
+    cout &lt;&lt; a.top() &lt;&lt; &#39; &#39;;
+    a.pop();
+&#125; 
+cout &lt;&lt; endl;
+
+while (!c.empty()) 
+&#123;
+    cout &lt;&lt; c.top() &lt;&lt; &#39; &#39;;
+    c.pop();
+&#125;
+cout &lt;&lt; endl;
+
+b.push(&quot;abc&quot;);
+b.push(&quot;abcd&quot;);
+b.push(&quot;cbd&quot;);
+while (!b.empty()) 
+&#123;
+    cout &lt;&lt; b.top() &lt;&lt; &#39; &#39;;
+    b.pop();
+&#125; 
+cout &lt;&lt; endl;
+return 0;
+&#125;
+</code></pre><h2 id="自定义类型优先队列例子"><a href="#自定义类型优先队列例子" class="headerlink" title="自定义类型优先队列例子"></a>自定义类型优先队列例子</h2><pre><code>#include &lt;iostream&gt;
+#include &lt;queue&gt;
+using namespace std;
+
+//方法1
+struct tmp1 //运算符重载&lt;
+&#123;
+int x;
+tmp1(int a) &#123;x = a;&#125;
+bool operator&lt;(const tmp1&amp; a) const
+&#123;
+    return x &lt; a.x; //大顶堆
+&#125;
+&#125;;
+
+//方法2
+struct tmp2 //重写仿函数
+&#123;
+bool operator() (tmp1 a, tmp1 b) 
+&#123;
+    return a.x &lt; b.x; //大顶堆
+&#125;
+&#125;;
+
+int main() 
+&#123;
+tmp1 a(1);
+tmp1 b(2);
+tmp1 c(3);
+priority_queue&lt;tmp1&gt; d;
+d.push(b);
+d.push(c);
+d.push(a);
+while (!d.empty()) 
+&#123;
+    cout &lt;&lt; d.top().x &lt;&lt; &#39;\n&#39;;
+    d.pop();
+&#125;
+cout &lt;&lt; endl;
+
+priority_queue&lt;tmp1, vector&lt;tmp1&gt;, tmp2&gt; f;
+f.push(b);
+f.push(c);
+f.push(a);
+while (!f.empty()) 
+&#123;
+    cout &lt;&lt; f.top().x &lt;&lt; &#39;\n&#39;;
+    f.pop();
+&#125;
+&#125;
+</code></pre><h2 id="很多时候，我们不应该重载结构体的运算符。像数据结构vector，它有它的基本运算方法，我们不应该重载它的运算符。此时，我们就应该自定义结构体替代less-lt-gt-和greater-lt-gt-通过重载括号符就可以更改比较规则"><a href="#很多时候，我们不应该重载结构体的运算符。像数据结构vector，它有它的基本运算方法，我们不应该重载它的运算符。此时，我们就应该自定义结构体替代less-lt-gt-和greater-lt-gt-通过重载括号符就可以更改比较规则" class="headerlink" title="很多时候，我们不应该重载结构体的运算符。像数据结构vector，它有它的基本运算方法，我们不应该重载它的运算符。此时，我们就应该自定义结构体替代less&lt;&gt;和greater&lt;&gt;,通过重载括号符就可以更改比较规则"></a>很多时候，我们不应该重载结构体的运算符。像数据结构vector，它有它的基本运算方法，我们不应该重载它的运算符。此时，我们就应该自定义结构体替代less&lt;&gt;和greater&lt;&gt;,通过重载括号符就可以更改比较规则</h2><pre><code>#include&lt;iostream&gt;//c++标准头文件，可以使用cout,cin等标准库函数 
+#include&lt;queue&gt;//使用priority_queue时需要的头文件 
+using namespace std;//命名空间，防止重名给程序带来各种隐患，使用cin,cout,stack,map,set,vector,queue时都要使用
+struct test&#123;//定义一个结构体test 
+    int val;
+    test(int v)&#123;//构造函数 
+        this-&gt;val=v;
+    &#125;
+//    下面是基本的运算方法，我们不能随意更改它 
+    bool operator &gt; (const test t)const&#123;//重载运算符
+        return val&gt;t.val;
+    &#125;
+    bool operator &lt; (const test t)const&#123;//重载运算符
+        return val&lt;t.val;
+    &#125;
+&#125;;
+
+struct cmp&#123;
+    bool operator () (const test t1,const test t2)const&#123;//重载括号运算符
+        return t1.val&lt;t2.val;//小于号是大根堆，大于号是小根堆 
+    &#125;
+&#125;;
+int main()&#123;
+    priority_queue&lt;test,vector&lt;test&gt;,cmp&gt; q;//自定义一个优先级队列q 
+    cout&lt;&lt;&quot;自定义一个优先级队列q: priority_queue&lt;test,vector&lt;test&gt;,cmp&gt; q&quot;&lt;&lt;endl; 
+    q.push(test(10));//向队列中添加一个test，val的值为10 
+    q.push(test(5));//向队列中添加一个test，val的值为5
+    q.push(test(7));//向队列中添加一个test，val的值为7
+    cout&lt;&lt;&quot;q.top().val=&quot;&lt;&lt;q.top().val&lt;&lt;endl;
+    cout&lt;&lt;endl; 
+
+
+    q.pop();
+    cout&lt;&lt;&quot;q.top().val=&quot;&lt;&lt;q.top().val&lt;&lt;endl;
+    cout&lt;&lt;endl; 
+
+    q.pop();
+    cout&lt;&lt;&quot;q.top().val=&quot;&lt;&lt;q.top().val&lt;&lt;endl;
+    cout&lt;&lt;endl; 
+
+    q.pop();
+    cout&lt;&lt;&quot;目前队列是空的，不能使用q.top()查询队首元素&quot;&lt;&lt;endl;
+
+
+&#125;
+</code></pre>
+            <br />
+            <p class="meta">
+                
+            </p>
+        </div>
+
+        <div class="col-sm-3">
+             
+<span><b> TL;DR</b></span>
+<p>
+	Yet another hexo theme.
+</p>
+<hr />
+
+
+<span><b> TL;DR 2</b></span>
+<p>
+	No, not another one :/
+</p>
+<hr />
+
+ 
+
+<span
+	><a href="https://twitter.com/hexojs" target="_blank" rel="noopener"
+		><b
+			><i class="fab fa-twitter-square"></i>
+			<i class="fas fa-at"></i>
+			hexojs</b
+		></a
+	></span
+>
+<br />
+<a class="twitter-timeline" data-height="800" data-dnt="true" data-chrome="nofooter transparent noheader noborders " target="_blank" rel="noopener" href="https://twitter.com/hexojs?ref_src=twsrc%5Etfw"></a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+        </div>
+    </div>
+</div>
+<!-- Menu fade on scroll -->
+<script>
+    var isScrolling;
+    var prevScrollpos = window.pageYOffset;
+    window.addEventListener(
+        'scroll',
+        function(event) {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(function() {
+                var currentScrollPos = window.pageYOffset;
+                if (prevScrollpos > currentScrollPos) {
+                    $('#navbar').slideDown();
+                } else {
+                    $('#navbar').slideUp();
+                }
+                prevScrollpos = currentScrollPos;
+            }, 66);
+        },
+        false
+    );
+</script>
+
+
+<a class="float-left gradient btn paginationbtn" href="/2023/09/06/最小割与最大流/"><i class="fas fa-chevron-left"></i></a>
+
+
+<a class="float-right gradient btn paginationbtn" href="/2023/09/07/大小顶堆/"><i class="fas fa-chevron-right"></i></a>
+
+    </main>
+    <!-- Footer -->
+    <footer class="page-footer">
+  <div class="container">
+    <div class="social-icons">
+      
+      <a href="https://hexo.io/" title="Hexo.io" target="_blank" rel="noopener" class="fas fa-home"></a>
+      
+      <a href="https://twitter.com/hexojs" title="@hexojs" target="_blank" rel="noopener" class="fab fa-twitter"></a>
+      
+      <a href="https://github.com/RandomAdversary/Gradient/issues" title="Report issue" target="_blank" rel="noopener" class="fas fa-bug"></a>
+      
+    </div>
+  </div>
+</footer>
+    <!-- After footer scripts -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+</body>
+
+</html>

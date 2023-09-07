@@ -5,21 +5,21 @@
 
   
   <title>
-    blog -
-    
+    最小割与最大流 |
+    blog
   </title>
   
 
 
   <meta name="description" content="">
   <meta name="author" content="张若淇">
-  <meta property="og:title" content="blog" />
+  <meta property="og:title" content="最小割与最大流" />
   <meta property="og:description" content="" />
   <meta property='og:site_name' content='blog' />
   <meta property="og:image" content="http://example.com/img/default.jpg" />
   <meta name="twitter:card" content="summary" />
   <meta name="twitter:description" content="" />
-  <meta name="twitter:title" content="blog" />
+  <meta name="twitter:title" content="最小割与最大流" />
 
   <meta name="twitter:image" content="http://example.com/img/default.jpg" />
 
@@ -73,181 +73,91 @@
 </nav>
 
     <main class="page main-page">
-        
+        <div class="container blogPost">
+    <div class="row">
+        <div class="col-sm-9 px-md-5">
+            <h2 class="blog-post-title">
+                最小割与最大流
+            </h2>
+            <p class="meta">
+                <i class="far fa-clock"></i>
+                2023-09-06 
+            </p>
+            <!-- Content -->
+            <h1 id="最小割问题"><a href="#最小割问题" class="headerlink" title="最小割问题"></a>最小割问题</h1><p>最小割问题如图所示<br><img src="/2023/09/06/%E6%9C%80%E5%B0%8F%E5%89%B2%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%B5%81/1.png" alt></p>
+<p>割出掉总权重最小的边使a,b不再连通。</p>
+<h1 id="最大流问题"><a href="#最大流问题" class="headerlink" title="最大流问题"></a>最大流问题</h1><p><img src="/2023/09/06/%E6%9C%80%E5%B0%8F%E5%89%B2%E4%B8%8E%E6%9C%80%E5%A4%A7%E6%B5%81/2.png" alt><br>找到S,T 中的最大流量</p>
+<h2 id="最小割问腿等价于最大流问题"><a href="#最小割问腿等价于最大流问题" class="headerlink" title="最小割问腿等价于最大流问题"></a>最小割问腿等价于最大流问题</h2><p>因为最大流一定不可能小于最小割。想要流量最大，那么最小割一定被占满，否则就是没有物尽其用。</p>
+<p>最大流也不可能大于最大流，因为最大流所有流量都要经过最小割。</p>
+<h2 id="最大流问题求解"><a href="#最大流问题求解" class="headerlink" title="最大流问题求解"></a>最大流问题求解</h2><p>将图割问题转化为最大流问题并求解即可得到最终的分割结果。</p>
 
-<div class="title">
-    <h2>
-        2023
-    </h2>
-</div>
+            <br />
+            <p class="meta">
+                
+            </p>
+        </div>
+
+        <div class="col-sm-3">
+             
+<span><b> TL;DR</b></span>
+<p>
+	Yet another hexo theme.
+</p>
+<hr />
 
 
-<div class="band">
-    
-    <div class="item-01">
-  <a href="/2023/08/03/circlefitting/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        circlefitting
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-02">
-  <a href="/2023/08/03/删除注释/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        删除注释
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-03">
-  <a href="/2023/08/03/线性扫描/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        线性扫描
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-04">
-  <a href="/2023/08/03/两数之和/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        两数之和
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-05">
-  <a href="/2023/08/03/两数相加/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        两数相加
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-06">
-  <a href="/2023/08/03/快速幂/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        快速幂
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-07">
-  <a href="/2023/08/03/滑窗不重复子串/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        滑窗不重复子串
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-08">
-  <a href="/2023/08/03/反转链表/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        反转链表
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-09">
-  <a href="/2023/08/03/最长有效括号/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        最长有效括号
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-    <div class="item-010">
-  <a href="/2023/08/03/dp回文子串/" class="post">
-    <div class="thumb" style="background-image: url(/./img/default.jpg);"></div>
-    <article>
-      <h1>
-        dp回文子串
-      </h1>
-      <p>
-        
-      </p>
-      <span>
-        2023-08-03</span>
-    </article>
-  </a>
-</div>
-    
-</div>
+<span><b> TL;DR 2</b></span>
+<p>
+	No, not another one :/
+</p>
+<hr />
 
-<a class="float-left gradient btn paginationbtn" href="/archives/2023/"><i class="fas fa-chevron-left"></i></a>
+ 
 
+<span
+	><a href="https://twitter.com/hexojs" target="_blank" rel="noopener"
+		><b
+			><i class="fab fa-twitter-square"></i>
+			<i class="fas fa-at"></i>
+			hexojs</b
+		></a
+	></span
+>
+<br />
+<a class="twitter-timeline" data-height="800" data-dnt="true" data-chrome="nofooter transparent noheader noborders " target="_blank" rel="noopener" href="https://twitter.com/hexojs?ref_src=twsrc%5Etfw"></a>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+
+        </div>
+    </div>
+</div>
+<!-- Menu fade on scroll -->
+<script>
+    var isScrolling;
+    var prevScrollpos = window.pageYOffset;
+    window.addEventListener(
+        'scroll',
+        function(event) {
+            window.clearTimeout(isScrolling);
+            isScrolling = setTimeout(function() {
+                var currentScrollPos = window.pageYOffset;
+                if (prevScrollpos > currentScrollPos) {
+                    $('#navbar').slideDown();
+                } else {
+                    $('#navbar').slideUp();
+                }
+                prevScrollpos = currentScrollPos;
+            }, 66);
+        },
+        false
+    );
+</script>
+
+
+<a class="float-left gradient btn paginationbtn" href="/2023/09/06/graphcut-grabcut/"><i class="fas fa-chevron-left"></i></a>
+
+
+<a class="float-right gradient btn paginationbtn" href="/2023/09/07/优先队列/"><i class="fas fa-chevron-right"></i></a>
 
     </main>
     <!-- Footer -->
